@@ -247,3 +247,6 @@ htmlcov/
 .coverage
 .coverage.*
 coverage.xml
+
+# Jupyter notebooks in main folder
+*.ipynb

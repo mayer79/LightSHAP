@@ -84,11 +84,9 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mayer79/lightshap"
-Documentation = "https://lightshap.readthedocs.io"
-Repository = "https://github.com/mayer79/lightshap"
-"Bug Tracker" = "https://github.com/mayer79/lightshap/issues"
-Changelog = "https://github.com/mayer79/lightshap/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/mayer79/LightSHAP"
+Repository = "https://github.com/mayer79/LightSHAP"
+"Bug Tracker" = "https://github.com/mayer79/LightSHAP/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
