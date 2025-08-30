@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install hatch
+      run: pip install hatch
+
+    - name: Run tests
+      run: hatch run test:cov
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install hatch
+      run: pip install hatch
+
+    - name: Build package
+      run: hatch build
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://upload.pypi.org/legacy/

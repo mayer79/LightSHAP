@@ -182,3 +182,42 @@ dependencies = [
 [tool.hatch.envs.test.scripts]
 test = "pytest {args}"
 cov = "pytest --cov=lightshap --cov-report=html --cov-report=term-missing {args}"
+
+[tool.hatch.publish.index]
+disable = false
+
+[tool.hatch.publish.index.repos]
+testpypi = "https://test.pypi.org/legacy/"
+
+[tool.hatch.envs.release]
+dependencies = [
+    "build",
+    "twine",
+]
+
+[tool.hatch.envs.release.scripts]
+check = "python -m build --check"  
+build = "python -m build"
+publish-test = "python -m twine upload --repository testpypi dist/*"
+publish = "python -m twine upload dist/*"
+
+[tool.hatch.envs.dev]
+dependencies = [
+    "ruff>=0.1.0",
+    "pre-commit>=2.20.0",
+]
+
+[tool.hatch.envs.dev.scripts]
+lint = "ruff check src/ tests/"
+format = "ruff format src/ tests/"
+format-check = "ruff format --check src/ tests/"
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "nbsphinx>=0.8.0",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "sphinx-build -b html docs docs/_build/html"

@@ -1,0 +1,32 @@
+name: Security
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 6 * * 1'  # Run every Monday at 6 AM
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        pip install hatch
+        pip install safety bandit
+
+    - name: Run safety check
+      run: safety check
+
+    - name: Run bandit security linter
+      run: bandit -r src/
