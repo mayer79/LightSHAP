@@ -5,6 +5,7 @@
 | | |
 | --- | --- |
 | Package | [![PyPI - Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) |
+| CI/CD | [![CI - Test](https://github.com/mayer79/LightSHAP/actions/workflows/test.yml/badge.svg)](https://github.com/mayer79/LightSHAP/actions/workflows/test.yml) |
 | Meta | [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) |
 
 **Lightweight Python implementation of SHAP (SHapley Additive exPlanations).**
