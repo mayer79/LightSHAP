@@ -1,5 +1,14 @@
 import numpy as np
 
+# Handle polars import at module level
+try:
+    import polars as pl
+
+    HAS_POLARS = True
+except ImportError:
+    HAS_POLARS = False
+    pl = None
+
 
 def get_dataclass(data):
     """Determine the type of the input.
@@ -29,3 +38,13 @@ def get_dataclass(data):
     else:
         msg = "Unknown data class. Expected 'numpy', 'pandas', or 'polars'"
         raise KeyError(msg)
+
+
+def get_polars():
+    """Get polars module or raise error if not available."""
+    if not HAS_POLARS:
+        raise ImportError(
+            "polars is required but is not installed. "
+            "Install it with: pip install polars"
+        )
+    return pl

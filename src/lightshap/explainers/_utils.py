@@ -3,12 +3,7 @@ from itertools import combinations, product
 
 import numpy as np
 
-try:
-    import polars as pl
-except ImportError:
-    pl = None
-
-from lightshap._utils import get_dataclass
+from lightshap._utils import get_dataclass, get_polars
 
 
 def replicate_data(X, m):
@@ -64,6 +59,7 @@ def repeat_masks(Z, m, pl_schema=None):
     """
     out = np.repeat(Z, m, axis=0)
     if pl_schema is not None:
+        pl = get_polars()
         out = pl.DataFrame(out, schema=pl_schema)
     return out
 
@@ -407,6 +403,7 @@ def collapse_with_index(x, xclass):
         else:
             unique_x = x
     elif xclass == "pl":
+        pl = get_polars()
         unique_x = x.unique(maintain_order=True)
 
         if len(unique_x) < len(x):
@@ -474,6 +471,7 @@ def masked_predict(predict, masks_rep, x, bg_rep, weights, xclass, collapse, bg_
         for i, v in enumerate(bg_masked.columns.to_list()):
             bg_masked.loc[masks_rep[:, i], v] = x[v]
     else:  # polars DataFrame
+        pl = get_polars()
         bg_masked = bg_rep.with_columns(
             pl.when(masks_rep[v]).then(pl.lit(x[v])).otherwise(pl.col(v)).alias(v)
             for v in bg_rep.columns
