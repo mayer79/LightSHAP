@@ -196,7 +196,7 @@ def explain_any(
         for i in range(n)
     )
 
-    shap_values, se, converged, n_iter = map(np.stack, zip(*res))
+    shap_values, se, converged, n_iter = map(np.stack, zip(*res, strict=False))
 
     if converged is not None and not converged.all():
         non_converged = converged.shape[0] - np.count_nonzero(converged)

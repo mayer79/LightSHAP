@@ -388,7 +388,7 @@ class TestScatter:
         plotter = ExplanationPlotter(multi_explanation)
 
         ax = plotter.scatter(features=["feature_1"], which_output=1)
-        assert isinstance(ax, (plt.Axes, np.ndarray))
+        assert isinstance(ax, plt.Axes | np.ndarray)
         plt.close()
 
     def test_color_features_empty_list(self):

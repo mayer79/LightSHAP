@@ -140,13 +140,11 @@ def is_lightgbm(x):
         return False
     return isinstance(
         x,
-        (
-            lgb.Booster,
-            lgb.LGBMModel,
-            lgb.LGBMRanker,
-            lgb.LGBMRegressor,
-            lgb.LGBMClassifier,
-        ),
+        lgb.Booster
+        | lgb.LGBMModel
+        | lgb.LGBMRanker
+        | lgb.LGBMRegressor
+        | lgb.LGBMClassifier,
     )
 
 
@@ -178,15 +176,13 @@ def is_xgboost(x):
         return False
     return isinstance(
         x,
-        (
-            xgb.Booster,
-            xgb.XGBRanker,
-            xgb.XGBModel,
-            xgb.XGBRegressor,
-            xgb.XGBClassifier,
-            xgb.XGBRFClassifier,
-            xgb.XGBRFRegressor,
-        ),
+        xgb.Booster
+        | xgb.XGBRanker
+        | xgb.XGBModel
+        | xgb.XGBRegressor
+        | xgb.XGBClassifier
+        | xgb.XGBRFClassifier
+        | xgb.XGBRFRegressor,
     )
 
 
@@ -216,12 +212,10 @@ def is_catboost(x):
         return False
     return isinstance(
         x,
-        (
-            catboost.CatBoost,
-            catboost.CatBoostClassifier,
-            catboost.CatBoostRanker,
-            catboost.CatBoostRegressor,
-        ),
+        catboost.CatBoost
+        | catboost.CatBoostClassifier
+        | catboost.CatBoostRanker
+        | catboost.CatBoostRegressor,
     )
 
 
