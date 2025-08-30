@@ -9,10 +9,10 @@ description = "A lightweight SHAP library"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Michael Mayer", email = "mayermichael79@gmail.com"}
 ]
 maintainers = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Michael Mayer", email = "mayermichael79@gmail.com"}
 ]
 keywords = ["shap", "explainability", "machine-learning", "interpretability", "xai"]
 classifiers = [
@@ -69,8 +69,7 @@ docs = [
     "sphinx>=5.0.0",
     "sphinx-rtd-theme>=1.0.0",
     "nbsphinx>=0.8.0",
-    "jupyter>=1.0.0",
-    "scikit-learn>=1.5.0",  # Needed for examples in docs
+    "myst-parser>=0.18.0",  # Added for README.md parsing
 ]
 
 # All optional dependencies
@@ -197,7 +196,7 @@ dependencies = [
 
 [tool.hatch.envs.release.scripts]
 check = "python -m build --check"  
-build = "python -m build"
+build = "hatch build"
 publish-test = "python -m twine upload --repository testpypi dist/*"
 publish = "python -m twine upload dist/*"
 
@@ -217,7 +216,4 @@ dependencies = [
     "sphinx>=5.0.0",
     "sphinx-rtd-theme>=1.0.0",
     "nbsphinx>=0.8.0",
-]
-
-[tool.hatch.envs.docs.scripts]
-build = "sphinx-build -b html docs docs/_build/html"
+    "myst-parser
