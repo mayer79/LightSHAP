@@ -380,7 +380,7 @@ class ExplanationPlotter:
         fig.supylabel("SHAP Value")
 
         # Add subplots
-        for v, axis in zip(features, ax.flatten()):
+        for v, axis in zip(features, ax.flatten(), strict=False):
             color_feature = color_feature_dict.get(v)
             if color_feature is not None:
                 color_axis = color_axis_dict[color_feature]
@@ -575,12 +575,12 @@ class ExplanationPlotter:
             msg = f"row_id {row_id} must be integer and < {len(xp)} observations"
             raise ValueError(msg)
 
-        if not isinstance(fill_colors, (list, tuple)) or len(fill_colors) != 2:
+        if not isinstance(fill_colors, list | tuple) or len(fill_colors) != 2:
             msg = "fill_colors must be a list or tuple of length 2"
             raise ValueError(msg)
 
         if annotation is not None and (
-            not isinstance(annotation, (list, tuple)) or len(annotation) != 2
+            not isinstance(annotation, list | tuple) or len(annotation) != 2
         ):
             msg = "annotation must be a list or tuple of length 2, or None."
             raise ValueError(msg)
@@ -591,7 +591,7 @@ class ExplanationPlotter:
             value = xp.X.iloc[row_id][feature]
             if pd.isna(value):
                 to_display = "nan"
-            elif isinstance(value, (int, float)):
+            elif isinstance(value, int | float):
                 to_display = f"{value:.3g}"
             else:
                 to_display = str(value)
