@@ -1,0 +1,8 @@
+[bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101"]  # Skip assert statements
+
+# You can also add other security checks to skip if needed:
+# B601 - paramiko calls
+# B602 - subprocess calls
+# B603 - subprocess without shell=True
