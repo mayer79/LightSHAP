@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-from scipy.special import binom
 
 from lightshap.explainers.kernel_utils import (
     calculate_exact_prop,
@@ -13,7 +12,6 @@ from lightshap.explainers.kernel_utils import (
     prepare_input_exact,
     prepare_input_hybrid,
     prepare_input_sampling,
-    prepare_Z_w_A,
 )
 
 
@@ -263,38 +261,36 @@ class TestPrecalculateKernelShap:
 class TestOneKernelShap:
     """Test single row explanation with Kernel SHAP."""
 
-    def setup_method(self):
-        """Set up test data."""
-        rng = np.random.default_rng(42)
-        self.X = pd.DataFrame(rng.standard_normal((20, 3)), columns=["A", "B", "C"])
-        self.bg_X = self.X.iloc[:10]
-        self.bg_w = None
-
-        # Simple linear model
-        self.weights = np.array([1.0, 2.0, -1.0])
-
-        def predict_fn(X):
-            return (X.values @ self.weights).reshape(-1, 1)
-
-        self.predict = predict_fn
-        self.v0 = predict_fn(self.bg_X).mean(keepdims=True)
-        self.v1 = predict_fn(self.X)
-
     def test_exact_kernelshap_single_row(self):
         """Test exact Kernel SHAP for a single row."""
-        precalc = precalculate_kernelshap(p=3, bg_X=self.bg_X, how="exact")
+        # Set up test data
+        rng = np.random.default_rng(0)
+        X = pd.DataFrame(rng.standard_normal((20, 3)), columns=["A", "B", "C"])
+        bg_X = X.iloc[:10]
+        bg_w = None
+
+        # Simple linear model
+        weights = np.array([1.0, 2.0, -1.0])
+
+        def predict_fn(X):
+            return (X.values @ weights).reshape(-1, 1)
+
+        v0 = predict_fn(bg_X).mean(keepdims=True)
+        v1 = predict_fn(X)
+
+        precalc = precalculate_kernelshap(p=3, bg_X=bg_X, how="exact")
 
         shap_values, se, converged, n_iter = one_kernelshap(
             i=0,
-            predict=self.predict,
+            predict=predict_fn,
             how="exact",
-            bg_w=self.bg_w,
-            v0=self.v0,
+            bg_w=bg_w,
+            v0=v0,
             max_iter=1,
             tol=0.01,
             random_state=0,
-            X=self.X,
-            v1=self.v1,
+            X=X,
+            v1=v1,
             precalc=precalc,
             collapse=np.array([False]),
             bg_n=10,
@@ -307,7 +303,7 @@ class TestOneKernelShap:
         assert n_iter == 1
 
         # Check efficiency property
-        prediction_diff = self.v1[0] - self.v0[0]
+        prediction_diff = v1[0] - v0[0]
         shap_sum = shap_values.sum(axis=0)
         np.testing.assert_array_almost_equal(shap_sum, prediction_diff)
 
@@ -393,5 +389,7 @@ class TestOneKernelShap:
 
             # Check efficiency property (hybrid should be exact for linear models)
             prediction_diff = v1_medium[0] - v0_medium[0]
+            shap_sum = shap_values.sum(axis=0)
+            np.testing.assert_array_almost_equal(shap_sum, prediction_diff)
             shap_sum = shap_values.sum(axis=0)
             np.testing.assert_array_almost_equal(shap_sum, prediction_diff)
