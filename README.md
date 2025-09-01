@@ -165,7 +165,11 @@ explanation.plot.waterfall(row_id=0)
 - `.plot.scatter()` - SHAP dependence plots
 - `.plot.waterfall()` - Individual prediction explanation
 - `.importance()` - Feature importance values
-- `.filter()` - Filter observations
+- `.filter()` - Filter observations by condition
+- `.select_output()`- Select output (for multi-output models)
+- `.set_feature_names()` - Change or set feature names, e.g., when `X` is numpy
+- `.set_output_names()` - Change or set output names (for multi-output models)
+- `.set_X()` - Change input data
 - `...`
 
 ## Contributing
