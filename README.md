@@ -4,9 +4,10 @@
 
 | | |
 | --- | --- |
-| Package | [![PyPI - Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) |
-| CI/CD | [![CI - Test](https://github.com/mayer79/LightSHAP/actions/workflows/test.yml/badge.svg)](https://github.com/mayer79/LightSHAP/actions/workflows/test.yml) |
-| Meta | [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) |
+| Package | [![PyPI - Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) [![GitHub release](https://img.shields.io/github/v/release/mayer79/LightSHAP)](https://github.com/mayer79/LightSHAP/releases) [![Development Status](https://img.shields.io/badge/status-beta-orange.svg)](https://github.com/mayer79/LightSHAP) |
+| CI/CD | [![CI - Test](https://github.com/mayer79/LightSHAP/actions/workflows/test.yml/badge.svg)](https://github.com/mayer79/LightSHAP/actions/workflows/test.yml) [![Security](https://github.com/mayer79/LightSHAP/actions/workflows/security.yml/badge.svg)](https://github.com/mayer79/LightSHAP/actions/workflows/security.yml) [![Release](https://github.com/mayer79/LightSHAP/actions/workflows/release.yml/badge.svg)](https://github.com/mayer79/LightSHAP/actions/workflows/release.yml) |
+| Quality | [![Code style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![GitHub issues](https://img.shields.io/github/issues/mayer79/LightSHAP)](https://github.com/mayer79/LightSHAP/issues) [![GitHub stars](https://img.shields.io/github/stars/mayer79/LightSHAP?style=social)](https://github.com/mayer79/LightSHAP) |
+| Meta | [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch) [![GitHub contributors](https://img.shields.io/github/contributors/mayer79/LightSHAP)](https://github.com/mayer79/LightSHAP/graphs/contributors) |
 
 **Lightweight Python implementation of SHAP (SHapley Additive exPlanations).**
 
@@ -45,15 +46,10 @@ explanation.plot.waterfall() # Individual explanation
 
 ## Installation
 
-**From source (not yet on PyPI):**
+**From Test PyPI:**
 
 ```bash
-git clone https://github.com/mayer79/lightshap.git
-cd lightshap
-pip install .
-
-# Or with optional dependencies
-pip install .[all]  # includes polars, tree models
+pip install -i https://test.pypi.org/simple/ lightshap
 ```
 
 **Requirements:** Python 3.11+ | Linux, Mac, Windows
