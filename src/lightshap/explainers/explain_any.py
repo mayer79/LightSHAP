@@ -96,6 +96,75 @@ def explain_any(
     Returns
     -------
     Explanation object
+
+    Examples
+    --------
+    **Example 1: Working with Numpy input**
+
+    >>> import numpy as np
+    >>> from lightshap import explain_any
+    >>>
+    >>> # Create synthetic data
+    >>> rng = np.random.default_rng(0)
+    >>> X = rng.standard_normal((1000, 4))
+    >>>
+    >>> # In practice, you would use model.predict, model.predict_proba,
+    >>> # or a function thereof, e.g.,
+    >>> # lambda X: scipy.special.logit(model.predict_proba(X))
+    >>> def predict_function(X):
+    ...     linear = X[:, 0] + 2 * X[:, 1] - X[:, 2] + 0.5 * X[:, 3]
+    ...     interactions = X[:, 0] * X[:, 1] - X[:, 1] * X[:, 2]
+    ...     return (linear + interactions).reshape(-1, 1)
+    >>>
+    >>> # Explain with numpy array (no feature names initially)
+    >>> explanation = explain_any(
+    ...     predict=predict_function,
+    ...     X=X[:100],  # Explain first 100 rows
+    ... )
+    >>>
+    >>> # Set meaningful feature names
+    >>> feature_names = ["temperature", "pressure", "humidity", "wind_speed"]
+    >>> explanation = explanation.set_feature_names(feature_names)
+    >>>
+    >>> # Generate plots
+    >>> explanation.plot.bar()
+    >>> explanation.plot.scatter(["temperature", "humidity"])
+    >>> explanation.plot.waterfall(row_id=0)
+
+    **Example 2: Polars input with categorical features**
+
+    >>> import numpy as np
+    >>> import polars as pl
+    >>> from lightshap import explain_any
+    >>>
+    >>> rng = np.random.default_rng(0)
+    >>> n = 800
+    >>>
+    >>> df = pl.DataFrame({
+    ...     "age": rng.uniform(18, 80, n).round(),
+    ...     "income": rng.exponential(50000, n).round(-3),
+    ...     "education": rng.choice(["high_school", "college", "graduate", "phd"], n),
+    ...     "region": rng.choice(["north", "south", "east", "west"], n),
+    ... }).with_columns([
+    ...     pl.col("education").cast(pl.Categorical),
+    ...     pl.col("region").cast(pl.Categorical),
+    ... ])
+    >>>
+    >>> # Again, in practice you would use a fitted model's predict instead
+    >>> def predict_function(X):
+    ...     pred = X["age"] / 50 + X["income"] / 100_000 * (
+    ...         1 + 0.5 * X["education"].is_in(["graduate", "phd"])
+    ...     )
+    ...     return pred
+    >>>
+    >>> explanation = explain_any(
+    ...     predict=predict_function,
+    ...     X=df[:200],  # Explain first 200 rows
+    ...     bg_X=df[200:400],  # Pass background dataset or use (subset) of X
+    ... )
+    >>>
+    >>> explanation.plot.beeswarm()
+    >>> explanation.plot.scatter()
     """
     bg_X, bg_w = check_or_derive_background_data(
         bg_X=bg_X, bg_w=bg_w, bg_n=bg_n, X=X, random_state=random_state
