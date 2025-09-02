@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "lightshap"
-version = "0.1.1"
+dynamic = ["version"]
 description = "A lightweight SHAP library"
 readme = "README.md"
 license = {text = "MIT"}
@@ -79,11 +79,11 @@ Homepage = "https://github.com/mayer79/LightSHAP"
 Repository = "https://github.com/mayer79/LightSHAP"
 "Bug Tracker" = "https://github.com/mayer79/LightSHAP/issues"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/lightshap"]
 
-[tool.setuptools.package-dir]
-"" = "src"
+[tool.hatch.build.hooks.vcs]
+version-file = "src/lightshap/_version.py"
 
 # Ruff configuration (handles both linting and formatting)
 [tool.ruff]
@@ -202,3 +202,6 @@ dependencies = [
 lint = "ruff check src/ tests/"
 format = "ruff format src/ tests/"
 format-check = "ruff format --check src/ tests/"
+
+[tool.hatch.version]
+source = "vcs"
