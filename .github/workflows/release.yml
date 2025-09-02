@@ -34,12 +34,4 @@ jobs:
       with:
         repository-url: https://test.pypi.org/legacy/
         verbose: true
-      with:
-        python-version: "3.11"
-
-    - name: Install hatch
-      run: pip install hatch
-
-    - name: Build package
-      run: hatch build
-
+        
