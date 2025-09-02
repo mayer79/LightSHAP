@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.1] - 2025-09-02
+
+### Fixed
+- Fixed release workflow to only publish to TestPyPI (removed PyPI publishing)
+- Resolved workflow syntax errors and duplicate steps
+
 ## [0.1.0] - 2025-09-02
 
 ### Added
