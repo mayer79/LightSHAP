@@ -8,10 +8,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
-    environment:
-      name: release
-      url: https://test.pypi.org/project/lightshap/
-
     permissions:
       id-token: write
 
@@ -34,4 +30,3 @@ jobs:
       with:
         repository-url: https://test.pypi.org/legacy/
         verbose: true
-        
