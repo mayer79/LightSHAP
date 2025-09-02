@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4] - 2025-09-02
+
+### Changed
+- Migrated from setuptools to hatchling build backend
+- Implemented dynamic versioning with hatch-vcs (version now reads from git tags)
+- Modernized build system configuration
+
 ## [0.1.3] - 2025-09-02
 
 ### Fixed
