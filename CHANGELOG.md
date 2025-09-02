@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.3] - 2025-09-02
+
+### Fixed
+- Fixed TestPyPI trusted publisher configuration error
+- Resolved "invalid-publisher" error in release workflow
+
 ## [0.1.2] - 2025-09-02
 
 ### Fixed
