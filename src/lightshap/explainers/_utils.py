@@ -172,7 +172,7 @@ def generate_partly_exact_masks(p, degree):
         msg = "p must be >= 2 * degree"
         raise ValueError(msg)
     if degree == 1:
-        Z = np.diag(np.ones(p, dtype=bool))
+        Z = np.eye(p, dtype=bool)
     else:
         comb = np.array(list(combinations(range(p), r=degree)))
         Z = np.zeros((len(comb), p), dtype=bool)
@@ -440,9 +440,9 @@ def masked_predict(predict, masks_rep, x, bg_rep, weights, xclass, collapse, bg_
         for each row.
     masks_rep : ndarray or pl.DataFrame
         An ((m * n_bg) x p) ndarray or pl.DataFrame with on-off values (boolean mask).
-    x : DataFrame, array
-        Row to be explained. If a DataFrame, it should have one row, if numpy array,
-        it should be replicated to the same dimension as the repeated background data.
+    x : ndarray, pd.Series, or pl.DataFrame
+        Row to be explained. Note that for polars, we expect a DataFrame with one row,
+        while for pandas, we expect a Series with colnames as index.
     bg_rep : DataFrame, array
         Background data stacked m times, i.e., having shape ((m * n_bg) x p)
     weights : array, optional

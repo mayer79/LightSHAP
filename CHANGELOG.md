@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- More unit tests
+
 ## [0.1.4] - 2025-09-02
 
 ### Changed
