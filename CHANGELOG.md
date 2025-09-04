@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Added
-- More unit tests
+- More and better unit tests
 
 ## [0.1.4] - 2025-09-02
 

@@ -161,29 +161,50 @@ class TestPrepareInputs:
         # A should be symmetric
         np.testing.assert_array_almost_equal(result["A"], result["A"].T)
 
-    def test_prepare_input_hybrid_sampling_give_weight_one_degree_two(self):
-        """Test hybrid plus sampling gives weight 1 when degree=2."""
-        p = 7
-        degree = 2
-        start = 0
+    def test_prepare_input_sampling_approximately_exact(self):
+        """Test that sampling A approximates exact A when repeating many times."""
+
         rng = np.random.default_rng(0)
+        nsim = 1000
 
-        sampling = prepare_input_sampling(p, degree, start, rng)["w"]
-        hybrid = prepare_input_hybrid(p, degree)["w"]
+        for p in [4, 5, 6]:
+            A_samp = np.zeros((p, p))
+            for j in range(nsim):
+                A_samp += prepare_input_sampling(p, degree=0, start=j % p, rng=rng)["A"]
+            A_samp /= nsim
+            A_exact = prepare_input_exact(p)["A"]
+            assert np.abs(A_exact - A_samp).max() < 0.01
 
-        assert np.isclose(sampling.sum() + hybrid.sum(), 1.0)
+    def test_prepare_input_hybrid_approximately_exact(self):
+        """Test that hybrid A approximates exact A for different degrees when repeating
+        many times.
+        """
 
-    def test_prepare_input_hybrid_sampling_give_weight_one_degree_one(self):
-        """Test hybrid plus sampling gives weight 1 when degree=1."""
-        p = 5
-        degree = 1
-        start = 0
         rng = np.random.default_rng(0)
+        nsim = 1000
 
-        sampling = prepare_input_sampling(p, degree, start, rng)["w"]
-        hybrid = prepare_input_hybrid(p, degree)["w"]
+        for p, degree in ((4, 1), (5, 1), (6, 1), (6, 2), (7, 2)):
+            A_sampling = np.zeros((p, p))
+            for j in range(nsim):
+                A_sampling += prepare_input_sampling(
+                    p, degree=degree, start=j % p, rng=rng
+                )["A"]
+            A_hybrid_exact = prepare_input_hybrid(p, degree=degree)["A"]
+            A_hybrid_sampling = A_sampling / nsim
+            A_hybrid = A_hybrid_sampling + A_hybrid_exact
+            A_exact = prepare_input_exact(p)["A"]
+            assert np.abs(A_exact - A_hybrid).max() < 0.01
 
-        assert np.isclose(sampling.sum() + hybrid.sum(), 1.0)
+    def test_prepare_input_hybrid_sampling_give_weight_one(self):
+        """Test hybrid and sampling weights sum to 1."""
+        for p, degree in ((4, 1), (5, 1), (6, 1), (6, 2), (7, 2)):
+            start = 0
+            rng = np.random.default_rng(0)
+
+            sampling = prepare_input_sampling(p, degree, start, rng)["w"]
+            hybrid = prepare_input_hybrid(p, degree)["w"]
+
+            assert np.isclose(sampling.sum() + hybrid.sum(), 1.0)
 
     def test_prepare_input_sampling_error(self):
         """Test sampling input preparation error case."""

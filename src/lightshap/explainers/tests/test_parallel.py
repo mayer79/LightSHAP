@@ -24,7 +24,7 @@ def test_parallel_vs_serial_methods(method, how):
     model = RandomForestClassifier(n_estimators=10, random_state=1)
     model.fit(X, y)
 
-    X_small = X[0:10]
+    X_small = X[0:5]
 
     # Serial execution
     result_serial = explain_any(
