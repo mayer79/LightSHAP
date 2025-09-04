@@ -325,7 +325,7 @@ def prepare_input_sampling(p, degree, start, rng):
     Z = generate_permutation_masks(J, degree=degree)
 
     # How much of the total weight do we need to cover?
-    w_total = 1.0 if degree == 0 else calculate_exact_prop(p, degree)
+    w_total = 1.0 if degree == 0 else 1.0 - calculate_exact_prop(p, degree)
     kw = calculate_kernel_weights_per_coalition_size(p)
 
     return prepare_Z_w_A(Z, kw=kw, w_total=w_total)

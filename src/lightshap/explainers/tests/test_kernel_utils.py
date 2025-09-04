@@ -161,6 +161,30 @@ class TestPrepareInputs:
         # A should be symmetric
         np.testing.assert_array_almost_equal(result["A"], result["A"].T)
 
+    def test_prepare_input_hybrid_sampling_give_weight_one_degree_two(self):
+        """Test hybrid plus sampling gives weight 1 when degree=2."""
+        p = 7
+        degree = 2
+        start = 0
+        rng = np.random.default_rng(0)
+
+        sampling = prepare_input_sampling(p, degree, start, rng)["w"]
+        hybrid = prepare_input_hybrid(p, degree)["w"]
+
+        assert np.isclose(sampling.sum() + hybrid.sum(), 1.0)
+
+    def test_prepare_input_hybrid_sampling_give_weight_one_degree_one(self):
+        """Test hybrid plus sampling gives weight 1 when degree=1."""
+        p = 5
+        degree = 1
+        start = 0
+        rng = np.random.default_rng(0)
+
+        sampling = prepare_input_sampling(p, degree, start, rng)["w"]
+        hybrid = prepare_input_hybrid(p, degree)["w"]
+
+        assert np.isclose(sampling.sum() + hybrid.sum(), 1.0)
+
     def test_prepare_input_sampling_error(self):
         """Test sampling input preparation error case."""
         rng = np.random.default_rng(42)
