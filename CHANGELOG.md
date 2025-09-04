@@ -5,6 +5,12 @@
 ### Added
 - More and better unit tests
 
+### Fixed
+- Tests requiring xgboost, lightgbm, and catboost are now skipped if the packages are not available
+
+### Technical Details
+- Renamed some files for consistency
+
 ## [0.1.4] - 2025-09-02
 
 ### Changed
