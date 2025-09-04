@@ -3,7 +3,7 @@ import pandas as pd
 import polars as pl
 import pytest
 
-from lightshap._utils import get_dataclass, get_polars
+from lightshap.utils import get_dataclass, get_polars
 
 
 class TestGetDataclass:

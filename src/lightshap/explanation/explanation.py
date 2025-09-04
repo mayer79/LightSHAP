@@ -3,7 +3,7 @@ import math
 import numpy as np
 import pandas as pd
 
-from lightshap._utils import get_dataclass
+from lightshap.utils import get_dataclass
 
 from ._utils import _check_features, _safe_cor, safe_to_float
 from .explanationplotter import ExplanationPlotter

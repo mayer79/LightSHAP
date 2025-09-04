@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.special import binom
 
-from lightshap._utils import get_dataclass
+from lightshap.utils import get_dataclass
 
 from ._utils import (
     check_convergence,
