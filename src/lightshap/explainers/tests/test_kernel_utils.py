@@ -161,22 +161,43 @@ class TestPrepareInputs:
         # A should be symmetric
         np.testing.assert_array_almost_equal(result["A"], result["A"].T)
 
-    def test_prepare_input_hybrid_sampling_give_weight_one_degree_two(self):
-        """Test hybrid plus sampling gives weight 1 when degree=2."""
-        p = 7
-        degree = 2
-        start = 0
+    @pytest.mark.parametrize("p", [4, 5, 6])
+    def test_prepare_input_sampling_approximately_exact(self, p):
+        """Test that sampling A approximates exact A when repeating many times."""
+
         rng = np.random.default_rng(0)
+        nsim = 1000
 
-        sampling = prepare_input_sampling(p, degree, start, rng)["w"]
-        hybrid = prepare_input_hybrid(p, degree)["w"]
+        A_samp = np.zeros((p, p))
+        for j in range(nsim):
+            A_samp += prepare_input_sampling(p, degree=0, start=j % p, rng=rng)["A"]
+        A_samp /= nsim
+        A_exact = prepare_input_exact(p)["A"]
+        assert np.abs(A_exact - A_samp).max() < 0.01
 
-        assert np.isclose(sampling.sum() + hybrid.sum(), 1.0)
+    @pytest.mark.parametrize("p,degree", [(4, 1), (5, 1), (6, 1), (6, 2), (7, 2)])
+    def test_prepare_input_hybrid_approximately_exact(self, p, degree):
+        """Test that hybrid A approximates exact A for different degrees when repeating
+        many times.
+        """
 
-    def test_prepare_input_hybrid_sampling_give_weight_one_degree_one(self):
-        """Test hybrid plus sampling gives weight 1 when degree=1."""
-        p = 5
-        degree = 1
+        rng = np.random.default_rng(0)
+        nsim = 1000
+
+        A_sampling = np.zeros((p, p))
+        for j in range(nsim):
+            A_sampling += prepare_input_sampling(
+                p, degree=degree, start=j % p, rng=rng
+            )["A"]
+        A_hybrid_exact = prepare_input_hybrid(p, degree=degree)["A"]
+        A_hybrid_sampling = A_sampling / nsim
+        A_hybrid = A_hybrid_sampling + A_hybrid_exact
+        A_exact = prepare_input_exact(p)["A"]
+        assert np.abs(A_exact - A_hybrid).max() < 0.01
+
+    @pytest.mark.parametrize("p,degree", [(4, 1), (5, 1), (6, 1), (6, 2), (7, 2)])
+    def test_prepare_input_hybrid_sampling_give_weight_one(self, p, degree):
+        """Test hybrid and sampling weights sum to 1."""
         start = 0
         rng = np.random.default_rng(0)
 
@@ -247,26 +268,26 @@ class TestPrecalculateKernelShap:
         assert result["masks_exact_rep"].shape == ((2**p - 2) * 10, p)
         assert result["bg_exact_rep"].shape == ((2**p - 2) * 10, p)
 
-    def test_precalculate_hybrid(self):
+    @pytest.mark.parametrize("how", ["h1", "h2"])
+    def test_precalculate_hybrid(self, how):
         """Test precalculation for hybrid methods."""
         p = 6
         rng = np.random.default_rng(0)
         X = pd.DataFrame(rng.standard_normal((10, p)), columns=list("ABCDEF"))
 
-        for how in ["h1", "h2"]:
-            result = precalculate_kernelshap(p, X, how=how)
+        result = precalculate_kernelshap(p, X, how=how)
 
-            # Check required keys
-            required_keys = [
-                "Z",
-                "w",
-                "A",
-                "masks_exact_rep",
-                "bg_exact_rep",
-                "bg_sampling_rep",
-            ]
-            for key in required_keys:
-                assert key in result
+        # Check required keys
+        required_keys = [
+            "Z",
+            "w",
+            "A",
+            "masks_exact_rep",
+            "bg_exact_rep",
+            "bg_sampling_rep",
+        ]
+        for key in required_keys:
+            assert key in result
 
     def test_precalculate_sampling(self):
         """Test precalculation for sampling method."""
@@ -374,7 +395,8 @@ class TestOneKernelShap:
         shap_sum = shap_values.sum(axis=0)
         np.testing.assert_array_almost_equal(shap_sum, prediction_diff)
 
-    def test_hybrid_kernelshap_single_row(self):
+    @pytest.mark.parametrize("how", ["h1", "h2"])
+    def test_hybrid_kernelshap_single_row(self, how):
         """Test hybrid Kernel SHAP for a single row."""
         X_medium = pd.DataFrame(np.random.randn(20, 7), columns=list("ABCDEFG"))
         bg_X_medium = X_medium.iloc[:10]
@@ -388,32 +410,29 @@ class TestOneKernelShap:
         v0_medium = predict_fn_medium(bg_X_medium).mean(keepdims=True)
         v1_medium = predict_fn_medium(X_medium)
 
-        for how in ["h1", "h2"]:
-            precalc = precalculate_kernelshap(p=7, bg_X=bg_X_medium, how=how)
+        precalc = precalculate_kernelshap(p=7, bg_X=bg_X_medium, how=how)
 
-            shap_values, se, _, _ = one_kernelshap(
-                i=0,
-                predict=predict_fn_medium,
-                how=how,
-                bg_w=None,
-                v0=v0_medium,
-                max_iter=10,
-                tol=0.01,
-                random_state=0,
-                X=X_medium,
-                v1=v1_medium,
-                precalc=precalc,
-                collapse=np.array([False]),
-                bg_n=10,
-            )
+        shap_values, se, _, _ = one_kernelshap(
+            i=0,
+            predict=predict_fn_medium,
+            how=how,
+            bg_w=None,
+            v0=v0_medium,
+            max_iter=10,
+            tol=0.01,
+            random_state=0,
+            X=X_medium,
+            v1=v1_medium,
+            precalc=precalc,
+            collapse=np.array([False]),
+            bg_n=10,
+        )
 
-            # Check output shapes
-            assert shap_values.shape == (7, 1)
-            assert se.shape == (7, 1)
+        # Check output shapes
+        assert shap_values.shape == (7, 1)
+        assert se.shape == (7, 1)
 
-            # Check efficiency property (hybrid should be exact for linear models)
-            prediction_diff = v1_medium[0] - v0_medium[0]
-            shap_sum = shap_values.sum(axis=0)
-            np.testing.assert_array_almost_equal(shap_sum, prediction_diff)
-            shap_sum = shap_values.sum(axis=0)
-            np.testing.assert_array_almost_equal(shap_sum, prediction_diff)
+        # Check efficiency property (hybrid should be exact for linear models)
+        prediction_diff = v1_medium[0] - v0_medium[0]
+        shap_sum = shap_values.sum(axis=0)
+        np.testing.assert_array_almost_equal(shap_sum, prediction_diff)

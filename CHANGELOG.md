@@ -3,7 +3,14 @@
 ## [Unreleased]
 
 ### Added
-- More unit tests
+- More and better unit tests
+
+### Fixed
+- Tests requiring xgboost, lightgbm, and catboost are now skipped if the packages are not available
+
+### Technical Details
+- Renamed some files for consistency
+- Updated GitHub release workflow to use "release" environment
 
 ## [0.1.4] - 2025-09-02
 

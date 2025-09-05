@@ -1,9 +1,6 @@
-import catboost
-import lightgbm as lgb
 import numpy as np
 import pandas as pd
 import pytest
-import xgboost as xgb
 from sklearn.datasets import make_classification, make_regression
 from sklearn.ensemble import RandomForestRegressor
 
@@ -30,6 +27,8 @@ class TestXGBoost:
 
     def test_xgboost_booster_regression_dmatrix(self):
         """Test XGBoost Booster with DMatrix for regression."""
+        xgb = pytest.importorskip("xgboost")
+
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         dtrain = xgb.DMatrix(X, label=y, feature_names=feature_names)
@@ -49,6 +48,8 @@ class TestXGBoost:
 
     def test_xgboost_booster_regression_numpy(self):
         """Test XGBoost Booster with numpy array for regression."""
+        xgb = pytest.importorskip("xgboost")
+
         X, y = regression_data()
         dtrain = xgb.DMatrix(X, label=y)
 
@@ -66,6 +67,8 @@ class TestXGBoost:
 
     def test_xgboost_regressor_pandas(self):
         """Test XGBRegressor with pandas DataFrame."""
+        xgb = pytest.importorskip("xgboost")
+
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -88,6 +91,8 @@ class TestXGBoost:
 
     def test_xgboost_classifier_multiclass(self):
         """Test XGBClassifier with 3 classes."""
+        xgb = pytest.importorskip("xgboost")
+
         X, y = classification_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -114,6 +119,8 @@ class TestXGBoost:
 
     def test_xgboost_rf_regressor(self):
         """Test XGBRFRegressor."""
+        xgb = pytest.importorskip("xgboost")
+
         X, y = regression_data()
 
         model = xgb.XGBRFRegressor(n_estimators=10, random_state=0)
@@ -133,6 +140,8 @@ class TestXGBoost:
 
     def test_xgboost_rf_classifier(self):
         """Test XGBRFClassifier with 3 classes."""
+        xgb = pytest.importorskip("xgboost")
+
         X, y = classification_data()
 
         model = xgb.XGBRFClassifier(n_estimators=10, random_state=0)
@@ -160,6 +169,8 @@ class TestLightGBM:
 
     def test_lightgbm_booster_numpy(self):
         """Test LightGBM Booster with numpy array."""
+        lgb = pytest.importorskip("lightgbm")
+
         X, y = regression_data()
         train_data = lgb.Dataset(X, label=y)
 
@@ -180,6 +191,8 @@ class TestLightGBM:
 
     def test_lightgbm_regressor_pandas(self):
         """Test LGBMRegressor with pandas DataFrame."""
+        lgb = pytest.importorskip("lightgbm")
+
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -200,6 +213,8 @@ class TestLightGBM:
 
     def test_lightgbm_regressor_numpy(self):
         """Test LGBMRegressor with numpy array."""
+        lgb = pytest.importorskip("lightgbm")
+
         X, y = regression_data()
 
         model = lgb.LGBMRegressor(n_estimators=10, verbose=-1, random_state=0)
@@ -217,6 +232,8 @@ class TestLightGBM:
 
     def test_lightgbm_classifier_multiclass(self):
         """Test LGBMClassifier with 3 classes."""
+        lgb = pytest.importorskip("lightgbm")
+
         X, y = classification_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -247,6 +264,8 @@ class TestCatBoost:
 
     def test_catboost_regressor_pandas(self):
         """Test CatBoostRegressor with pandas DataFrame."""
+        catboost = pytest.importorskip("catboost")
+
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -268,6 +287,8 @@ class TestCatBoost:
 
     def test_catboost_regressor_numpy(self):
         """Test CatBoostRegressor with numpy array."""
+        catboost = pytest.importorskip("catboost")
+
         X, y = regression_data()
 
         model = catboost.CatBoostRegressor(iterations=10, verbose=False, random_state=0)
@@ -287,6 +308,8 @@ class TestCatBoost:
 
     def test_catboost_classifier_multiclass_pandas(self):
         """Test CatBoostClassifier with 3 classes and pandas DataFrame."""
+        catboost = pytest.importorskip("catboost")
+
         X, y = classification_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -314,6 +337,8 @@ class TestCatBoost:
 
     def test_catboost_classifier_multiclass_numpy(self):
         """Test CatBoostClassifier with 3 classes and numpy array."""
+        catboost = pytest.importorskip("catboost")
+
         X, y = classification_data()
         model = catboost.CatBoostClassifier(
             iterations=10, verbose=False, random_state=0
@@ -342,7 +367,6 @@ class TestErrorHandling:
 
     def test_unsupported_model_raises_error(self):
         """Test that unsupported models raise TypeError."""
-
         X, y = make_regression(n_samples=100, n_features=4, random_state=1)
         model = RandomForestRegressor(n_estimators=10, random_state=0)
         model.fit(X, y)
@@ -354,6 +378,8 @@ class TestErrorHandling:
 
     def test_lgb_dataset_raises_error(self):
         """Test that LightGBM Dataset as X raises TypeError."""
+        lgb = pytest.importorskip("lightgbm")
+
         X, y = make_regression(n_samples=100, n_features=4, random_state=1)
         train_data = lgb.Dataset(X, label=y)
 

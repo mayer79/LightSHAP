@@ -3,7 +3,7 @@ from itertools import combinations, product
 
 import numpy as np
 
-from lightshap._utils import get_dataclass, get_polars
+from lightshap.utils import get_dataclass, get_polars
 
 
 def replicate_data(X, m):

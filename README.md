@@ -46,9 +46,10 @@ explanation.plot.waterfall() # Individual explanation
 
 ## Installation
 
-**From Test PyPI:**
+**Current (Beta):**
 
 ```bash
+# Install from TestPyPI
 pip install -i https://test.pypi.org/simple/ lightshap
 ```
 

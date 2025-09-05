@@ -22,6 +22,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    # Install OpenMP for macOS to fix XGBoost/LightGBM issues
+    - name: Install OpenMP on macOS
+      if: runner.os == 'macOS'
+      run: brew install libomp
+
     - name: Install hatch
       run: pip install hatch
 
