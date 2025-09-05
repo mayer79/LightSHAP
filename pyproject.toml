@@ -200,6 +200,10 @@ build = "hatch build"
 publish-test = "python -m twine upload --repository testpypi dist/*"
 publish = "python -m twine upload dist/*"
 
+# GitHub deployment environment configuration
+[tool.hatch.envs.release.env-vars]
+ENVIRONMENT = "release"
+
 [tool.hatch.envs.dev]
 dependencies = [
     "ruff>=0.1.0",

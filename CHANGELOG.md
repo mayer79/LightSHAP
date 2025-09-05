@@ -10,6 +10,7 @@
 
 ### Technical Details
 - Renamed some files for consistency
+- Updated GitHub release workflow to use "release" environment
 
 ## [0.1.4] - 2025-09-02
 
