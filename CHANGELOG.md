@@ -1,16 +1,16 @@
 # Changelog
 
-## [Unreleased]
+## [0.1.5] - 2025-09-05
 
 ### Added
 - More and better unit tests
 
 ### Fixed
-- Tests requiring xgboost, lightgbm, and catboost are now skipped if the packages are not available
+- Tests requiring xgboost, lightgbm, and catboost now use `pytest.importorskip()` for safer handling
+- Fixed OpenMP dependency issues on macOS in CI by installing `libomp` via homebrew
 
-### Technical Details
-- Renamed some files for consistency
-- Updated GitHub release workflow to use "release" environment
+### Changed
+- Renamed some test files for consistency
 
 ## [0.1.4] - 2025-09-02
 
