@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.6] - 2025-09-05
+
+### Fixed
+- Fixed release workflow
+
 ## [0.1.5] - 2025-09-05
 
 ### Added
