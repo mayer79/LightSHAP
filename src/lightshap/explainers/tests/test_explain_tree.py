@@ -6,6 +6,31 @@ from sklearn.ensemble import RandomForestRegressor
 
 from lightshap import explain_tree
 
+# Module-level conditional imports
+try:
+    import xgboost as xgb
+
+    HAS_XGBOOST = True
+except (ImportError, OSError):
+    HAS_XGBOOST = False
+    xgb = None
+
+try:
+    import lightgbm as lgb
+
+    HAS_LIGHTGBM = True
+except (ImportError, OSError):
+    HAS_LIGHTGBM = False
+    lgb = None
+
+try:
+    import catboost
+
+    HAS_CATBOOST = True
+except (ImportError, OSError):
+    HAS_CATBOOST = False
+    catboost = None
+
 
 def classification_data():
     X, y = make_classification(
@@ -25,10 +50,9 @@ def regression_data():
 class TestXGBoost:
     """Test XGBoost models with explain_tree."""
 
+    @pytest.mark.skipif(not HAS_XGBOOST, reason="XGBoost not available")
     def test_xgboost_booster_regression_dmatrix(self):
         """Test XGBoost Booster with DMatrix for regression."""
-        xgb = pytest.importorskip("xgboost")
-
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         dtrain = xgb.DMatrix(X, label=y, feature_names=feature_names)
@@ -46,10 +70,9 @@ class TestXGBoost:
         assert expl.baseline == expected_shap[0, -1]
         assert expl.feature_names == feature_names
 
+    @pytest.mark.skipif(not HAS_XGBOOST, reason="XGBoost not available")
     def test_xgboost_booster_regression_numpy(self):
         """Test XGBoost Booster with numpy array for regression."""
-        xgb = pytest.importorskip("xgboost")
-
         X, y = regression_data()
         dtrain = xgb.DMatrix(X, label=y)
 
@@ -65,10 +88,9 @@ class TestXGBoost:
         np.testing.assert_allclose(expl.X, X)
         assert expl.baseline == expected_shap[0, -1]
 
+    @pytest.mark.skipif(not HAS_XGBOOST, reason="XGBoost not available")
     def test_xgboost_regressor_pandas(self):
         """Test XGBRegressor with pandas DataFrame."""
-        xgb = pytest.importorskip("xgboost")
-
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -89,10 +111,9 @@ class TestXGBoost:
         assert expl.baseline == expected_shap[0, -1]
         assert expl.feature_names == feature_names
 
+    @pytest.mark.skipif(not HAS_XGBOOST, reason="XGBoost not available")
     def test_xgboost_classifier_multiclass(self):
         """Test XGBClassifier with 3 classes."""
-        xgb = pytest.importorskip("xgboost")
-
         X, y = classification_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -117,10 +138,9 @@ class TestXGBoost:
         np.testing.assert_allclose(expl.baseline, expected_baseline)
         assert expl.feature_names == feature_names
 
+    @pytest.mark.skipif(not HAS_XGBOOST, reason="XGBoost not available")
     def test_xgboost_rf_regressor(self):
         """Test XGBRFRegressor."""
-        xgb = pytest.importorskip("xgboost")
-
         X, y = regression_data()
 
         model = xgb.XGBRFRegressor(n_estimators=10, random_state=0)
@@ -138,10 +158,9 @@ class TestXGBoost:
         np.testing.assert_allclose(expl.X, X)
         assert expl.baseline == expected_shap[0, -1]
 
+    @pytest.mark.skipif(not HAS_XGBOOST, reason="XGBoost not available")
     def test_xgboost_rf_classifier(self):
         """Test XGBRFClassifier with 3 classes."""
-        xgb = pytest.importorskip("xgboost")
-
         X, y = classification_data()
 
         model = xgb.XGBRFClassifier(n_estimators=10, random_state=0)
@@ -167,10 +186,9 @@ class TestXGBoost:
 class TestLightGBM:
     """Test LightGBM models with explain_tree."""
 
+    @pytest.mark.skipif(not HAS_LIGHTGBM, reason="LightGBM not available")
     def test_lightgbm_booster_numpy(self):
         """Test LightGBM Booster with numpy array."""
-        lgb = pytest.importorskip("lightgbm")
-
         X, y = regression_data()
         train_data = lgb.Dataset(X, label=y)
 
@@ -189,10 +207,9 @@ class TestLightGBM:
         assert expl.baseline == expected_shap[0, -1]
         assert expl.feature_names == model.feature_name()
 
+    @pytest.mark.skipif(not HAS_LIGHTGBM, reason="LightGBM not available")
     def test_lightgbm_regressor_pandas(self):
         """Test LGBMRegressor with pandas DataFrame."""
-        lgb = pytest.importorskip("lightgbm")
-
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -211,10 +228,9 @@ class TestLightGBM:
         assert expl.baseline == expected_shap[0, -1]
         assert expl.feature_names == feature_names
 
+    @pytest.mark.skipif(not HAS_LIGHTGBM, reason="LightGBM not available")
     def test_lightgbm_regressor_numpy(self):
         """Test LGBMRegressor with numpy array."""
-        lgb = pytest.importorskip("lightgbm")
-
         X, y = regression_data()
 
         model = lgb.LGBMRegressor(n_estimators=10, verbose=-1, random_state=0)
@@ -230,10 +246,9 @@ class TestLightGBM:
         np.testing.assert_allclose(expl.X, X)
         assert expl.baseline == expected_shap[0, -1]
 
+    @pytest.mark.skipif(not HAS_LIGHTGBM, reason="LightGBM not available")
     def test_lightgbm_classifier_multiclass(self):
         """Test LGBMClassifier with 3 classes."""
-        lgb = pytest.importorskip("lightgbm")
-
         X, y = classification_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -262,10 +277,9 @@ class TestLightGBM:
 class TestCatBoost:
     """Test CatBoost models with explain_tree."""
 
+    @pytest.mark.skipif(not HAS_CATBOOST, reason="CatBoost not available")
     def test_catboost_regressor_pandas(self):
         """Test CatBoostRegressor with pandas DataFrame."""
-        catboost = pytest.importorskip("catboost")
-
         X, y = regression_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -285,10 +299,9 @@ class TestCatBoost:
         assert expl.baseline == expected_shap[0, -1]
         assert expl.feature_names == model.feature_names_
 
+    @pytest.mark.skipif(not HAS_CATBOOST, reason="CatBoost not available")
     def test_catboost_regressor_numpy(self):
         """Test CatBoostRegressor with numpy array."""
-        catboost = pytest.importorskip("catboost")
-
         X, y = regression_data()
 
         model = catboost.CatBoostRegressor(iterations=10, verbose=False, random_state=0)
@@ -306,10 +319,9 @@ class TestCatBoost:
         assert expl.baseline == expected_shap[0, -1]
         assert expl.feature_names == model.feature_names_
 
+    @pytest.mark.skipif(not HAS_CATBOOST, reason="CatBoost not available")
     def test_catboost_classifier_multiclass_pandas(self):
         """Test CatBoostClassifier with 3 classes and pandas DataFrame."""
-        catboost = pytest.importorskip("catboost")
-
         X, y = classification_data()
         feature_names = [f"f{i}" for i in range(X.shape[1])]
         X_df = pd.DataFrame(X, columns=feature_names)
@@ -335,10 +347,9 @@ class TestCatBoost:
         np.testing.assert_allclose(expl.baseline, expected_baseline)
         assert expl.feature_names == feature_names
 
+    @pytest.mark.skipif(not HAS_CATBOOST, reason="CatBoost not available")
     def test_catboost_classifier_multiclass_numpy(self):
         """Test CatBoostClassifier with 3 classes and numpy array."""
-        catboost = pytest.importorskip("catboost")
-
         X, y = classification_data()
         model = catboost.CatBoostClassifier(
             iterations=10, verbose=False, random_state=0
@@ -376,6 +387,7 @@ class TestErrorHandling:
         ):
             explain_tree(model, X)
 
+    @pytest.mark.skipif(not HAS_LIGHTGBM, reason="LightGBM not available")
     def test_lgb_dataset_raises_error(self):
         """Test that LightGBM Dataset as X raises TypeError."""
         lgb = pytest.importorskip("lightgbm")
