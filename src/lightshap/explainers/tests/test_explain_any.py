@@ -325,10 +325,10 @@ def test_sampling_methods_approximate_exact(method, how):
     n = 100
     rng = np.random.default_rng(1)
 
-    X = pd.DataFrame(rng.uniform(0, 1, (n, 6)), columns=[f"x{i}" for i in range(6)])
+    X = pd.DataFrame(rng.uniform(0, 2, (n, 6)), columns=[f"x{i}" for i in range(6)])
 
     def predict(X):
-        return X["x0"] * X["x1"] * X["x2"] + X["x3"] + X["x4"] + X["x5"]
+        return X["x0"] * X["x1"] * X["x2"] + X["x3"] * X["x4"] * X["x5"]
 
     X_test = X.head(5)
 
@@ -349,9 +349,12 @@ def test_sampling_methods_approximate_exact(method, how):
         bg_X=X,
         method=method,
         how=how,
+        tol=0.0005,
+        max_iter=500,  # to avoid convergence warnings
         verbose=False,
         random_state=1,
     )
 
-    # Check that approximation is good. The value 0.005 is somewhat arbitrary
-    assert np.abs(approximation.shap_values - exact.shap_values).max() < 0.005
+    # Check that the approximation works. The value 0.01 is somewhat arbitrary, but
+    # reasonable small given that the average prediction is 2.
+    assert np.abs(approximation.shap_values - exact.shap_values).max() < 0.01
