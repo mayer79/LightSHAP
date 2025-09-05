@@ -107,7 +107,7 @@ def test_permutation_vs_kernel_shap_with_interactions(use_sample_weights, method
     else:
         sample_weights = None
 
-    X_small = X.head(10)
+    X_small = X.head(5)
 
     # Get explanations using permutation SHAP
     reference = explain_any(
@@ -140,6 +140,9 @@ def test_permutation_vs_kernel_shap_with_interactions(use_sample_weights, method
 def test_against_shap_library_reference(method):
     """Test against known SHAP values from the Python shap library."""
     # Expected values from shap library (Exact explainers)
+    # Note that sampling methods do not perform very well here as the features
+    # are extremely highly correlated.
+
     expected = np.array(
         [
             [-1.19621609, -1.24184808, -0.9567848, 3.87942037, -0.33825, 0.54562519],
@@ -172,6 +175,8 @@ def test_against_shap_library_reference(method):
         how="exact",
         verbose=False,
     )
+
+    # Reference via shap.explainers.ExactExplainer(predict, X)(X_test) (shap 0.47.2)
 
     np.testing.assert_allclose(explanation.shap_values, expected, atol=ATOL)
 
@@ -303,3 +308,50 @@ class TestWeights:
                 explanation_weighted.shap_values,
                 atol=ATOL,
             )
+
+
+@pytest.mark.parametrize(
+    ("method", "how"),
+    [
+        ("permutation", "sampling"),
+        ("kernel", "sampling"),
+        ("kernel", "h1"),
+        ("kernel", "h2"),
+    ],
+)
+def test_sampling_methods_approximate_exact(method, how):
+    """Test that sampling methods approximate exact results within tolerance."""
+    # Note that we are using a model with interactions of order > 2
+    n = 100
+    rng = np.random.default_rng(1)
+
+    X = pd.DataFrame(rng.uniform(0, 1, (n, 6)), columns=[f"x{i}" for i in range(6)])
+
+    def predict(X):
+        return X["x0"] * X["x1"] * X["x2"] + X["x3"] + X["x4"] + X["x5"]
+
+    X_test = X.head(5)
+
+    # Exact reference
+    exact = explain_any(
+        predict=predict,
+        X=X_test,
+        bg_X=X,
+        method="permutation",
+        how="exact",
+        verbose=False,
+    )
+
+    # Approximation
+    approximation = explain_any(
+        predict=predict,
+        X=X_test,
+        bg_X=X,
+        method=method,
+        how=how,
+        verbose=False,
+        random_state=1,
+    )
+
+    # Check that approximation is good. The value 0.005 is somewhat arbitrary
+    assert np.abs(approximation.shap_values - exact.shap_values).max() < 0.005

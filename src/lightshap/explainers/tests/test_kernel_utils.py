@@ -23,7 +23,7 @@ class TestCalculateKernelWeights:
         p = 4
         weights = calculate_kernel_weights(p)
 
-        # Test against R: kernelshap:::kernel_weights(4)
+        # Test against R: kernelshap:::kernel_weights(4) # v 0.9.0
         expected = [0.4, 0.2, 0.4]
         np.testing.assert_array_almost_equal(weights, expected)
 
@@ -33,7 +33,7 @@ class TestCalculateKernelWeights:
         degree = 0
         weights = calculate_kernel_weights_per_coalition_size(p, degree)
 
-        # Test against R: kernelshap:::kernel_weights_per_coalition_size(5)
+        # Test against R: kernelshap:::kernel_weights_per_coalition_size(5) # v 0.9.0
         expected = [0.3, 0.2, 0.2, 0.3]
         np.testing.assert_array_almost_equal(weights, expected)
 
@@ -44,6 +44,7 @@ class TestCalculateKernelWeights:
         weights = calculate_kernel_weights_per_coalition_size(p, degree)
 
         # Test against R: kernelshap::kernel_weights_per_coalition_size(6, 2:4)
+        # v 0.9.0
         expected = [0.3461538, 0.3076923, 0.3461538]
         np.testing.assert_array_almost_equal(weights, expected, decimal=5)
 
@@ -69,7 +70,7 @@ class TestCalculateExactProp:
         degree = 2
         result = calculate_exact_prop(p, degree)
 
-        # test against R kernelshap:::prop_exact(6, 2)
+        # test against R kernelshap:::prop_exact(6, 2) # v 0.9.0
         assert np.isclose(result, 0.8540146)
 
     def test_exact_prop_half_features(self):
@@ -78,7 +79,7 @@ class TestCalculateExactProp:
         degree = 3
         result = calculate_exact_prop(p, degree)
 
-        # test against R kernelshap:::prop_exact(6, 3)
+        # test against R kernelshap:::prop_exact(6, 3) # v 0.9.0
         assert np.isclose(result, 1.0)
 
 
@@ -231,7 +232,7 @@ class TestKernelSolver:
         # A = rbind(c(1.0, 0.1), c(0.1, 1.0))
         # b = rbind(c(1.0, 2.0), c(3.0, 4.0))
         # constraint = c(4.0, 6.0)
-        # kernelshap:::solver(A, b, constraint)
+        # kernelshap:::solver(A, b, constraint)  # v 0.9.0
 
         expected = [[0.8888889, 1.888889], [3.1111111, 4.1111111]]
         np.testing.assert_array_almost_equal(result, expected)
