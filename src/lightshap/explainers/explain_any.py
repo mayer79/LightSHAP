@@ -35,17 +35,18 @@ def explain_any(
     Parameters
     ----------
     predict : callable
-        A callable to get predictions, i.e. `predict(X)`.
+        A callable to get predictions, e.g., `model.predict`, `model.predict_proba`,
+        or lambda x: scipy.special.logit(model.predict_proba(x)[:, -1]).
 
     X : pd.DataFrame, pl.DataFrame, np.ndarray
         Input data for which explanations are to be generated. Should contain only
-        feature columns.
+        the p feature columns. Must be compatible with `predict`.
 
     bg_X : pd.DataFrame, pl.DataFrame, np.ndarray, or None, default=None
         Background data used to integrate out "switched off" features,
         typically a representative sample of the training data with 100 to 500 rows.
-        Should contain the same columns as `X`.
-        If None, 200 rows of `X` are randomly selected as background data.
+        Should contain the same columns as `X`, and be compatible with `predict`.
+        If None, up to `bg_n` rows of `X` are randomly selected.
 
     bg_w : pd.Series, pl.Series, np.ndarray, or None, default=None
         Weights for the background data. If None, equal weights are used.
@@ -64,34 +65,34 @@ def explain_any(
         is used to approximate SHAP values. For Kernel SHAP, hybrid approaches between
         "sampling" and "exact" options are available: "h1" uses exact calculations
         for coalitions of size 1 and p-1, whereas "h2" uses exact calculations
-        for coalitions of size 1, 2, and p-2, p-1.
+        for coalitions of size 1, 2, p-2, and p-1.
         If None, it is set to "exact" when p <= 8. Otherwise, if method=="permutation",
         it is set to "sampling". For Kernel SHAP, if 8 < p <= 16, it is set to "h2",
         and to "h1" when p > 16.
 
     max_iter : int or None, default=None
-        If None, it is set to 10 * p, where p is the number of features in `X`.
-        Maximum number of iterations for the algorithm. Each iteration represents
-        a forward and backward pass through a random permutation of the values from
-        1+degree to p-1-degree, where degree is 0 if how=="sampling", 1 if how=="h1",
-        and 2 if how=="h2". p subsequent iterations are starting with different values.
-        Thus, `max_iter` should be a multiple of p. Not used when mode=="exact".
+        Maximum number of iterations for non-exact algorithms. Each iteration represents
+        a forward and backward pass through a random permutation.
+        For permutation SHAP, one iteration allows to evaluate Shapley's formula
+        2*p times (twice per feature).
+        p subsequent iterations are starting with different values for faster
+        convergence. If None, it is set to 10 * p.
 
     tol : float, default=0.01
-        Tolerance for convergence. The algorithm stops when the standard error
-        is smaller or equal to `tol * range(shap_values)` for each output dimension.
-        Not used when mode=="exact".
+        Tolerance for convergence. The algorithm stops when the estimated standard
+        errors are all smaller or equal to `tol * range(shap_values)`
+        for each output dimension. Not used when how=="exact".
 
     random_state : int or None, default=None
         Integer random seed to initialize numpy's random generator. Required for
         non-exact algorithms, and to subsample the background data if `bg_X` is None.
 
     n_jobs : int, default=1
-        Number of parallel jobs to run. If 1, no parallelization is used.
-        If -1, all available cores are used. Uses joblib.
+        Number of parallel jobs to run via joblib. If 1, no parallelization is used.
+        If -1, all available cores are used.
 
     verbose : bool, default=True
-        If True, prints information.
+        If True, prints information and the tqdm progress bar.
 
     Returns
     -------
