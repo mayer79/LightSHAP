@@ -2,6 +2,13 @@
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+source = "vcs"
+raw-options = { local_scheme = "no-local-version" }
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/lightshap/_version.py"
+
 [project]
 name = "lightshap"
 dynamic = ["version"]
@@ -83,9 +90,6 @@ Repository = "https://github.com/mayer79/LightSHAP"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/lightshap"]
-
-[tool.hatch.build.hooks.vcs]
-version-file = "src/lightshap/_version.py"
 
 # Ruff configuration (handles both linting and formatting)
 [tool.ruff]
@@ -214,7 +218,3 @@ dependencies = [
 lint = "ruff check src/"
 format = "ruff format src/"
 format-check = "ruff format --check src/"
-
-[tool.hatch.version]
-source = "vcs"
-scheme = "no-local"
