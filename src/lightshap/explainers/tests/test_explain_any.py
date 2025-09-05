@@ -321,7 +321,8 @@ class TestWeights:
 )
 def test_sampling_methods_approximate_exact(method, how):
     """Test that sampling methods approximate exact results within tolerance."""
-    # Note that we are using a model with interactions of order > 2
+    # Note that we are using a model with interactions of order > 2 to see
+    # differences between the methods.
     n = 100
     rng = np.random.default_rng(1)
 
@@ -342,19 +343,29 @@ def test_sampling_methods_approximate_exact(method, how):
         verbose=False,
     )
 
-    # Approximation
-    approximation = explain_any(
-        predict=predict,
-        X=X_test,
-        bg_X=X,
-        method=method,
-        how=how,
-        tol=0.0005,
-        max_iter=500,  # to avoid convergence warnings
-        verbose=False,
-        random_state=1,
-    )
+    # Approximations of increasing quality
+    approx = []
+    for tol in [0.01, 0.005, 0.0025]:
+        approx.append(
+            explain_any(
+                predict=predict,
+                X=X_test,
+                bg_X=X,
+                method=method,
+                how=how,
+                tol=tol,
+                max_iter=500,  # to avoid convergence warnings
+                verbose=False,
+                random_state=1,
+            )
+        )
+    mae = [np.abs(apr.shap_values - exact.shap_values).mean() for apr in approx]
 
-    # Check that the approximation works. The value 0.01 is somewhat arbitrary, but
-    # reasonable small given that the average prediction is 2.
-    assert np.abs(approximation.shap_values - exact.shap_values).max() < 0.01
+    # Approximations get better with smaller tolerance (but not necessarily strictly)
+    assert mae[0] >= mae[1] >= mae[2]
+
+    # These tolerances differ by factor of 4, so that equality is very unlikely
+    assert mae[0] > mae[2]
+
+    # Threshold somewhat arbitrary, but small given that average prediction is 2
+    assert mae[2] <= 0.005
