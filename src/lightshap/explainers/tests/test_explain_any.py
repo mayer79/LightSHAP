@@ -309,48 +309,49 @@ class TestWeights:
                 atol=ATOL,
             )
 
-    @pytest.mark.parametrize(
-        ("method", "how"),
-        [
-            ("permutation", "sampling"),
-            ("kernel", "sampling"),
-            ("kernel", "h1"),
-            ("kernel", "h2"),
-        ],
+
+@pytest.mark.parametrize(
+    ("method", "how"),
+    [
+        ("permutation", "sampling"),
+        ("kernel", "sampling"),
+        ("kernel", "h1"),
+        ("kernel", "h2"),
+    ],
+)
+def test_sampling_methods_approximate_exact(method, how):
+    """Test that sampling methods approximate exact results within tolerance."""
+    # Note that we are using a model with interactions of order > 2
+    n = 100
+    rng = np.random.default_rng(1)
+
+    X = pd.DataFrame(rng.uniform(0, 1, (n, 6)), columns=[f"x{i}" for i in range(6)])
+
+    def predict(X):
+        return X["x0"] * X["x1"] * X["x2"] + X["x3"] + X["x4"] + X["x5"]
+
+    X_test = X.head(5)
+
+    # Exact reference
+    exact = explain_any(
+        predict=predict,
+        X=X_test,
+        bg_X=X,
+        method="permutation",
+        how="exact",
+        verbose=False,
     )
-    def test_sampling_methods_approximate_exact(method, how):
-        """Test that sampling methods approximate exact results within tolerance."""
-        # Note that we are using a model with interactions of order > 2
-        n = 100
-        rng = np.random.default_rng(1)
 
-        X = pd.DataFrame(rng.uniform(0, 1, (n, 6)), columns=[f"x{i}" for i in range(6)])
+    # Approximation
+    approximation = explain_any(
+        predict=predict,
+        X=X_test,
+        bg_X=X,
+        method=method,
+        how=how,
+        verbose=False,
+        random_state=1,
+    )
 
-        def predict(X):
-            return X["x0"] * X["x1"] * X["x2"] + X["x3"] + X["x4"] + X["x5"]
-
-        X_test = X.head(5)
-
-        # Exact reference
-        exact = explain_any(
-            predict=predict,
-            X=X_test,
-            bg_X=X,
-            method="permutation",
-            how="exact",
-            verbose=False,
-        )
-
-        # Approximation
-        approximation = explain_any(
-            predict=predict,
-            X=X_test,
-            bg_X=X,
-            method=method,
-            how=how,
-            verbose=False,
-            random_state=1,
-        )
-
-        # Check that approximation is good. The value 0.005 is somewhat arbitrary
-        assert np.abs(approximation.shap_values - exact.shap_values).max() < 0.005
+    # Check that approximation is good. The value 0.005 is somewhat arbitrary
+    assert np.abs(approximation.shap_values - exact.shap_values).max() < 0.005
