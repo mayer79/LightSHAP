@@ -369,3 +369,114 @@ def test_sampling_methods_approximate_exact(method, how):
 
     # Threshold somewhat arbitrary, but small given that average prediction is 2
     assert mae[2] <= 0.005
+
+
+class TestErrorConditions:
+    """Test class for error conditions and bad inputs."""
+
+    def test_too_few_features(self):
+        """Test that p < 2 raises ValueError."""
+        X = pd.DataFrame({"x1": [1, 2, 3]})
+
+        def predict(X):
+            return X["x1"]
+
+        with pytest.raises(ValueError, match="At least two features are required"):
+            explain_any(predict, X)
+
+    def test_invalid_method(self):
+        """Test that invalid method raises ValueError."""
+        X = data_regression()
+
+        def predict(X):
+            return X["x1"] + X["x2"]
+
+        with pytest.raises(
+            ValueError, match="method must be 'permutation', 'kernel', or None"
+        ):
+            explain_any(predict, X, method="invalid")
+
+    @pytest.mark.parametrize("how", ["invalid", "h1", "h2"])
+    def test_invalid_how_for_permutation(self, how):
+        """Test that invalid how for permutation SHAP raises ValueError."""
+        X = data_regression()
+
+        def predict(X):
+            return X["x1"] + X["x2"]
+
+        with pytest.raises(
+            ValueError,
+            match="how must be 'exact', 'sampling', or None for permutation SHAP",
+        ):
+            explain_any(predict, X, method="permutation", how=how)
+
+    @pytest.mark.parametrize("how", ["invalid", "h3"])
+    def test_invalid_how_for_kernel(self, how):
+        """Test that invalid how for kernel SHAP raises ValueError."""
+        X = data_regression()
+
+        def predict(X):
+            return X["x1"] + X["x2"]
+
+        with pytest.raises(
+            ValueError,
+            match="how must be 'exact', 'sampling', 'h1', 'h2', or None for kernel SHAP",
+        ):
+            explain_any(predict, X, method="kernel", how=how)
+
+    def test_sampling_permutation_too_few_features(self):
+        """Test that sampling permutation SHAP with p < 4 raises ValueError."""
+        X = pd.DataFrame({"x1": [1, 2, 3], "x2": [4, 5, 6], "x3": [7, 8, 9]})
+
+        def predict(X):
+            return X["x1"] + X["x2"] + X["x3"]
+
+        with pytest.raises(
+            ValueError, match="Sampling Permutation SHAP is not supported for p < 4"
+        ):
+            explain_any(predict, X, bg_X=X, method="permutation", how="sampling")
+
+    def test_h1_kernel_too_few_features(self):
+        """Test that h1 kernel SHAP with p < 4 raises ValueError."""
+        X = pd.DataFrame({"x1": [1, 2, 3], "x2": [4, 5, 6], "x3": [7, 8, 9]})
+
+        def predict(X):
+            return X["x1"] + X["x2"] + X["x3"]
+
+        with pytest.raises(
+            ValueError, match="Degree 1 hybrid Kernel SHAP is not supported for p < 4"
+        ):
+            explain_any(predict, X, bg_X=X, method="kernel", how="h1")
+
+    def test_h2_kernel_too_few_features(self):
+        """Test that h2 kernel SHAP with p < 6 raises ValueError."""
+        X = pd.DataFrame(
+            {
+                "x1": [1, 2, 3, 4, 5],
+                "x2": [4, 5, 6, 7, 8],
+                "x3": [7, 8, 9, 10, 11],
+                "x4": [10, 11, 12, 13, 14],
+                "x5": [13, 14, 15, 16, 17],
+            }
+        )
+
+        def predict(X):
+            return X["x1"] + X["x2"] + X["x3"] + X["x4"] + X["x5"]
+
+        with pytest.raises(
+            ValueError, match="Degree 2 hybrid Kernel SHAP is not supported for p < 6"
+        ):
+            explain_any(predict, X, bg_X=X, method="kernel", how="h2")
+
+    @pytest.mark.parametrize("max_iter", [0, -1, -10, 0.5, "invalid"])
+    def test_invalid_max_iter(self, max_iter):
+        """Test that invalid max_iter raises ValueError."""
+        X = data_regression()
+
+        def predict(X):
+            return X["x1"] + X["x2"]
+
+        with pytest.raises(
+            ValueError, match="max_iter must be a positive integer or None"
+        ):
+            explain_any(predict, X, max_iter=max_iter)
