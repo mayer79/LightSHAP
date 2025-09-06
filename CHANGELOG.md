@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Added code coverage reporting to Codecov
+- Updated README badges to include code coverage
+
 ## [0.1.6] - 2025-09-05
 
 ### Fixed

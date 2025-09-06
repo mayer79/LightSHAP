@@ -167,10 +167,6 @@ def explain_any(
     >>> explanation.plot.beeswarm()
     >>> explanation.plot.scatter()
     """
-    bg_X, bg_w = check_or_derive_background_data(
-        bg_X=bg_X, bg_w=bg_w, bg_n=bg_n, X=X, random_state=random_state
-    )
-    bg_n = bg_X.shape[0]
     n, p = X.shape
 
     if p < 2:
@@ -220,6 +216,12 @@ def explain_any(
     elif not isinstance(max_iter, int) or max_iter < 1:
         msg = "max_iter must be a positive integer or None."
         raise ValueError(msg)
+
+    # Get or check background data (and weights)
+    bg_X, bg_w = check_or_derive_background_data(
+        bg_X=bg_X, bg_w=bg_w, bg_n=bg_n, X=X, random_state=random_state
+    )
+    bg_n = bg_X.shape[0]
 
     # Ensures predictions are (n, K) numpy arrays
     predict = safe_predict(predict)
