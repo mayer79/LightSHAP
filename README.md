@@ -49,8 +49,11 @@ explanation.plot.waterfall() # Individual explanation
 **Current (Beta):**
 
 ```bash
-# Install from TestPyPI
-pip install -i https://test.pypi.org/simple/ lightshap
+# From GitHub
+pip install git+https://github.com/mayer79/LightSHAP.git
+
+# From TestPyPI
+# pip install -i https://test.pypi.org/simple/ lightshap
 ```
 
 **Requirements:** Python 3.11+ | Linux, Mac, Windows
