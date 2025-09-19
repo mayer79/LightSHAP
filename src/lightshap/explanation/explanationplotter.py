@@ -703,7 +703,9 @@ class ExplanationPlotter:
                     (row["pos_left_bar"], i - bar_height / 2),
                     (row["pos_left"], i),
                 ]
-            polygon = Polygon(vertices, closed=True, color=row["fill_color"], zorder=3)
+            polygon = Polygon(
+                vertices, closed=True, color=row["fill_color"], zorder=3, linewidth=0.0
+            )
             ax.add_patch(polygon)
 
             text_x = (row["pos_left_bar"] + row["pos_right_bar"]) / 2
@@ -721,7 +723,7 @@ class ExplanationPlotter:
             # If text too large for bar, remove it
             text_width = text.get_window_extent(renderer=renderer)
             bar_width = bar[i].get_window_extent(renderer=renderer)
-            if text_width.width > bar_width.width:
+            if text_width.width > bar_width.width * 0.95:
                 text.remove()
 
         # Connections between bars
