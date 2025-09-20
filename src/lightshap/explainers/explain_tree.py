@@ -87,12 +87,12 @@ def explain_tree(model, X):
     >>> explanation.plot.bar()
     >>> explanation.plot.scatter(which_output=0)  # Class 0
     """
-    if is_xgboost(model):
-        shap_values, X, feature_names = xgb_shap(model, X=X)
-    elif is_lightgbm(model):
-        shap_values, X, feature_names = lgb_shap(model, X=X)
-    elif is_catboost(model):
-        shap_values, X, feature_names = catboost_shap(model, X=X)
+    if _is_xgboost(model):
+        shap_values, X, feature_names = _xgb_shap(model, X=X)
+    elif _is_lightgbm(model):
+        shap_values, X, feature_names = _lgb_shap(model, X=X)
+    elif _is_catboost(model):
+        shap_values, X, feature_names = _catboost_shap(model, X=X)
     else:
         msg = (
             "Model must be a LightGBM, XGBoost, or CatBoost model."
@@ -113,7 +113,7 @@ def explain_tree(model, X):
     return Explanation(shap_values, X=X, baseline=baseline, feature_names=feature_names)
 
 
-def is_lightgbm(x):
+def _is_lightgbm(x):
     """Returns True if x is a LightGBM model with SHAP support.
 
     The following model types are supported:
@@ -148,7 +148,7 @@ def is_lightgbm(x):
     )
 
 
-def is_xgboost(x):
+def _is_xgboost(x):
     """Returns True if x is an XGBoost model with SHAP support.
 
     The following model types are supported:
@@ -186,7 +186,7 @@ def is_xgboost(x):
     )
 
 
-def is_catboost(x):
+def _is_catboost(x):
     """Returns True if x is a CatBoost model with SHAP support.
 
     The following model types are supported:
@@ -219,7 +219,7 @@ def is_catboost(x):
     )
 
 
-def lgb_shap(model, X):
+def _lgb_shap(model, X):
     """Calculate SHAP values for LightGBM models.
 
     Parameters
@@ -264,7 +264,7 @@ def lgb_shap(model, X):
     return shap_values, X, feature_names
 
 
-def xgb_shap(model, X):
+def _xgb_shap(model, X):
     """Calculate SHAP values for XGBoost models.
 
     Parameters
@@ -306,7 +306,7 @@ def xgb_shap(model, X):
     return shap_values, X, model.feature_names
 
 
-def catboost_shap(model, X):
+def _catboost_shap(model, X):
     """Calculate SHAP values for CatBoost models.
 
     Parameters
