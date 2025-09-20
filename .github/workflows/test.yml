@@ -36,18 +36,21 @@ jobs:
     - name: Run formatting check
       run: ruff format --check src/
 
-    - name: Install test & runtime dependencies
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install package + dev dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov scikit-learn
-        pip install numpy pandas matplotlib scipy joblib tqdm
-        # optional: keep hatch if you still need it elsewhere
-        pip install hatch
+        # Install the package and extras declared in pyproject.toml
+        python -m pip install -e '.[dev]'
 
     - name: Run tests
-      # make src importable so `import lightshap` works
-      env:
-        PYTHONPATH: ${{ github.workspace }}/src
       run: python -m pytest --cov=lightshap --cov-branch --cov-report=xml --cov-report=html --cov-report=term-missing
 
     - name: Upload coverage reports to Codecov
