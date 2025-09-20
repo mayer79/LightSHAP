@@ -1,10 +1,5 @@
 # Examples
 
-This page contains examples of using LightSHAP with different types of models and datasets.
-
-!!! note
-    Examples will be added here. You can modify this file to include your notebook examples.
-
 ## Example 1: CatBoost model for diamond prices
 
 ```python
