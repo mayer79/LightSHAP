@@ -50,19 +50,19 @@ explanation.plot.waterfall(row_id=0)
 
 #### SHAP importance
 
-![SHAP importance](./docs/images/tree_bar.png?raw=true)
+![SHAP importance](images/tree_bar.png)
 
 #### SHAP summary
 
-![SHAP summary](./docs/images/tree_beeswarm.png?raw=true)
+![SHAP summary](images/tree_beeswarm.png)
 
 #### SHAP dependence
 
-![SHAP dependence](./docs/images/tree_scatter.png?raw=true)
+![SHAP dependence](images/tree_scatter.png)
 
 #### Individual explanation
 
-![SHAP waterfall](./docs/images/tree_waterfall.png?raw=true)
+![SHAP waterfall](images/tree_waterfall.png)
 
 
 ## Example 2: Linear regression with interactions
