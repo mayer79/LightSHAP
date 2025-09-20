@@ -51,7 +51,6 @@ plugins:
             inherited_members: true
             filters:
               - "!^_"  # exclude anything starting with _
-  - autorefs
 
 nav:
   - Home: index.md

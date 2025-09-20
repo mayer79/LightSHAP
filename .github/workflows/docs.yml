@@ -29,8 +29,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Avoid any potential hatch invocation by installing specific versions
-          pip install mkdocs==1.5.3 mkdocs-material==9.4.8 mkdocstrings[python]==0.24.0
+          # Use compatible versions to avoid griffe.collections error
+          pip install mkdocs mkdocs-material mkdocstrings[python] griffe
           pip install numpy pandas matplotlib
           
       - name: Build documentation

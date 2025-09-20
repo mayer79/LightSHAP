@@ -19,6 +19,3 @@
       show_root_heading: true
       heading_level: 3
       members_order: source
-    options:
-      show_root_heading: true
-      heading_level: 4
