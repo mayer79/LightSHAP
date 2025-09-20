@@ -34,7 +34,9 @@ jobs:
           pip install numpy pandas matplotlib
           
       - name: Build documentation
-        run: mkdocs build --clean
+        run: |
+          export PYTHONPATH="${GITHUB_WORKSPACE}/src:$PYTHONPATH"
+          mkdocs build --clean
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
