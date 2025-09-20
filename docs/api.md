@@ -19,25 +19,6 @@
       show_root_heading: true
       heading_level: 3
       members_order: source
-
-### Plot Methods
-
-::: lightshap.Explanation.plot.bar
-    options:
-      show_root_heading: true
-      heading_level: 4
-
-::: lightshap.Explanation.plot.beeswarm
-    options:
-      show_root_heading: true
-      heading_level: 4
-
-::: lightshap.Explanation.plot.scatter
-    options:
-      show_root_heading: true
-      heading_level: 4
-
-::: lightshap.Explanation.plot.waterfall
     options:
       show_root_heading: true
       heading_level: 4
