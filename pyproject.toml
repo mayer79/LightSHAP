@@ -61,12 +61,23 @@ catboost = ["catboost>=1.2.5"]
 # All tree models
 tree = ["xgboost>=2.1.0", "lightgbm>=4.4.0", "catboost>=1.2.5"]
 
+# Documentation dependencies
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+
 # Development dependencies
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "ruff>=0.1.0",
     "pre-commit>=2.20.0",
+    # Documentation
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.24.0",
     # Optional dependencies needed for testing
     "polars>=1.1.0",
     "pyarrow>=18.0.0",
@@ -84,6 +95,9 @@ all = [
     "lightgbm>=4.4.0",
     "catboost>=1.2.5",
     "scikit-learn>=1.5.0",
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.24.0",
 ]
 
 [project.urls]
@@ -216,12 +230,19 @@ ENVIRONMENT = "release"
 dependencies = [
     "ruff>=0.1.0",
     "pre-commit>=2.20.0",
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.24.0",
 ]
 
 [tool.hatch.envs.dev.scripts]
 lint = "ruff check src/"
 format = "ruff format src/"
 format-check = "ruff format --check src/"
+# Documentation commands
+docs-serve = "mkdocs serve"
+docs-build = "mkdocs build"
+docs-deploy = "mkdocs gh-deploy"
 # Add the direct ruff commands that you're trying to use
 ruff = "ruff {args}"
 check = "ruff check {args}"
