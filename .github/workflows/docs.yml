@@ -29,14 +29,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs-material mkdocstrings[python]
-          # Install only the dependencies needed for docs, avoid installing the package
+          # Avoid any potential hatch invocation by installing specific versions
+          pip install mkdocs==1.5.3 mkdocs-material==9.4.8 mkdocstrings[python]==0.24.0
           pip install numpy pandas matplotlib
           
       - name: Build documentation
-        run: |
-          export PYTHONPATH="${GITHUB_WORKSPACE}/src:$PYTHONPATH"
-          mkdocs build --clean
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+        run: mkdocs build --clean
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
