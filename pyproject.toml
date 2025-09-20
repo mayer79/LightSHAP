@@ -228,11 +228,9 @@ ENVIRONMENT = "release"
 
 [tool.hatch.envs.dev]
 dependencies = [
-    "ruff>=0.1.0",
-    "pre-commit>=2.20.0",
-    "mkdocs>=1.5.0",
-    "mkdocs-material>=9.0.0",
-    "mkdocstrings[python]>=0.24.0",
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.6.0",
+    "mkdocstrings[python]>=1.18.0",
 ]
 
 [tool.hatch.envs.dev.scripts]
@@ -243,6 +241,3 @@ format-check = "ruff format --check src/"
 docs-serve = "mkdocs serve"
 docs-build = "mkdocs build"
 docs-deploy = "mkdocs gh-deploy"
-# Add the direct ruff commands that you're trying to use
-ruff = "ruff {args}"
-check = "ruff check {args}"
