@@ -11,6 +11,8 @@
 
 **Lightweight Python implementation of SHAP (SHapley Additive exPlanations).**
 
+📖 **[Documentation](https://mayer79.github.io/LightSHAP/)** | 🚀 **[Examples](https://mayer79.github.io/LightSHAP/examples/)** | 📋 **[API Reference](https://mayer79.github.io/LightSHAP/api/)**
+
 ## Key Features
 
 - **Tree Models**: TreeSHAP wrappers for XGBoost, LightGBM, and CatBoost via `explain_tree()`
@@ -34,7 +36,7 @@ from lightshap import explain_any, explain_tree
 # For any model
 explanation = explain_any(model.predict, X)
 
-# For tree models (XGBoost, LightGBM, CatBoost)  
+# For tree models (XGBoost, LightGBM, CatBoost)
 explanation = explain_tree(model, X)
 
 # Create plots
@@ -43,6 +45,16 @@ explanation.plot.beeswarm()  # Summary plot
 explanation.plot.scatter()   # Dependence plots
 explanation.plot.waterfall() # Individual explanation
 ```
+
+## Gallery
+
+![SHAP importance](docs/images/tree_bar.png?raw=true)
+
+![SHAP summary](docs/images/tree_beeswarm.png?raw=true)
+
+![SHAP dependence](docs/images/tree_scatter.png?raw=true)
+
+![SHAP waterfall](docs/images/tree_waterfall.png?raw=true)
 
 ## Installation
 
@@ -57,120 +69,6 @@ pip install git+https://github.com/mayer79/LightSHAP.git
 ```
 
 **Requirements:** Python 3.11+ | Linux, Mac, Windows
-
-# Examples
-
-## Example 1: CatBoost model for diamond prices
-
-```python
-import catboost
-import numpy as np
-import pandas as pd
-from sklearn.datasets import fetch_openml
-
-# Load and prepare diamond data
-diamonds = fetch_openml(data_id=42225, as_frame=True)
-
-X = diamonds.data.assign(
-    log_carat=lambda x: np.log(x.carat),  # better visualization
-    clarity=lambda x: pd.Categorical(
-        x.clarity, categories=["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
-    ),
-    cut=lambda x: pd.Categorical(
-        x.cut, categories=["Fair", "Good", "Very Good", "Premium", "Ideal"]
-    ),
-)[["log_carat", "cut", "color", "clarity"]]
-y = np.log(diamonds.target)
-
-# Fit model
-model = catboost.CatBoostRegressor(
-    iterations=100, depth=4, cat_features=["cut", "color", "clarity"], verbose=0
-)
-model.fit(X, y=y)
-```
-
-### TreeSHAP analysis
-
-```python
-from lightshap import explain_tree
-
-X_explain = X.sample(1000, random_state=0)
-explanation = explain_tree(model, X_explain)
-
-explanation.plot.bar()
-explanation.plot.beeswarm()
-explanation.plot.scatter(sharey=False)
-explanation.plot.waterfall(row_id=0)
-```
-
-#### SHAP importance
-
-![SHAP importance](./docs/images/tree_bar.png?raw=true)
-
-#### SHAP summary
-
-![SHAP summary](./docs/images/tree_beeswarm.png?raw=true)
-
-#### SHAP dependence
-
-![SHAP dependence](./docs/images/tree_scatter.png?raw=true)
-
-#### Individual explanation
-
-![SHAP waterfall](./docs/images/tree_waterfall.png?raw=true)
-
-<br/>
-
-## Example 2: Linear regression with interactions
-
-> **Note:** This example requires `glum`. Install with `pip install glum`
-
-```python
-from glum import GeneralizedLinearRegressor
-
-# Fit with interactions
-glm = GeneralizedLinearRegressor(
-    family="gaussian",
-    formula="log_carat * (clarity + cut + color)",
-    drop_first=True,
-)
-glm.fit(X, y=y)
-```
-
-### Model-agnostic SHAP analysis
-
-```python
-from lightshap import explain_any
-
-X_explain = X.sample(1000, random_state=0)
-explanation = explain_any(glm.predict, X_explain)
-
-explanation.plot.bar()
-explanation.plot.beeswarm() 
-explanation.plot.scatter(sharey=False)
-explanation.plot.waterfall(row_id=0)
-```
-
-## API Reference
-
-### Main Functions
-
-- `explain_any(predict, X, ...)` - Model-agnostic SHAP for any model
-- `explain_tree(model, X, ...)` - TreeSHAP for XGBoost, LightGBM, and CatBoost models
-
-### Explanation Object
-
-- `.plot.bar()` - Feature importance plot
-- `.plot.beeswarm()` - SHAP summary plot  
-- `.plot.scatter()` - SHAP dependence plots
-- `.plot.waterfall()` - Individual prediction explanation
-- `.importance()` - Feature importance values
-- `.filter()` - Filter observations by condition
-- `.select_output()`- Select output (for multi-output models)
-- `.set_feature_names()` - Change or set feature names, e.g., when `X` is numpy
-- `.set_output_names()` - Change or set output names (for multi-output models)
-- `.set_X()` - Change input data
-- `...`
 
 ## Contributing
 
