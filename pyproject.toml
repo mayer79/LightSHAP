@@ -219,3 +219,6 @@ dependencies = [
 lint = "ruff check src/"
 format = "ruff format src/"
 format-check = "ruff format --check src/"
+# Add the direct ruff commands that you're trying to use
+ruff = "ruff {args}"
+check = "ruff check {args}"
