@@ -233,11 +233,4 @@ dependencies = [
     "mkdocstrings[python]>=1.18.0",
 ]
 
-[tool.hatch.envs.dev.scripts]
-lint = "ruff check src/"
-format = "ruff format src/"
-format-check = "ruff format --check src/"
-# Documentation commands
-docs-serve = "mkdocs serve"
-docs-build = "mkdocs build"
-docs-deploy = "mkdocs gh-deploy"
+# NOTE: removed the [tool.hatch.envs.dev.scripts] section to avoid hatch wrapping/CLI parsing issues.
