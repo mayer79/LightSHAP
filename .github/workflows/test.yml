@@ -31,10 +31,10 @@ jobs:
       run: pip install hatch
 
     - name: Run linting
-      run: hatch run dev:lint
+      run: hatch run dev:lint --
 
     - name: Run formatting check
-      run: hatch run dev:format-check
+      run: hatch run dev:format-check --
 
     - name: Run tests
       run: hatch run test:cov --cov-branch --cov-report=xml
