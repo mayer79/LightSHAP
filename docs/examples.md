@@ -89,3 +89,19 @@ explanation.plot.beeswarm()
 explanation.plot.scatter(sharey=False)
 explanation.plot.waterfall(row_id=0)
 ```
+
+#### SHAP importance
+
+![SHAP importance](images/glm_bar.png)
+
+#### SHAP summary
+
+![SHAP summary](images/glm_beeswarm.png)
+
+#### SHAP dependence
+
+![SHAP dependence](images/glm_scatter.png)
+
+#### Individual explanation
+
+![SHAP waterfall](images/glm_waterfall.png)
