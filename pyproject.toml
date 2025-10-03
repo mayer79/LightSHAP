@@ -1,20 +1,22 @@
 [build-system]
 requires = [
-    "hatchling==1.27.0",  # or your locally working version
-    "hatch-vcs==0.5.0"
+    "hatchling==1.27.0",
+    # "hatch-vcs==0.5.0"  # Temporarily disabled to fix build issues
 ]
 build-backend = "hatchling.build"
 
-[tool.hatch.version]
-source = "vcs"
-raw-options = { local_scheme = "no-local-version" }
+# Temporarily comment out VCS versioning
+# [tool.hatch.version]
+# source = "vcs"
+# raw-options = { local_scheme = "no-local-version" }
 
-[tool.hatch.build.hooks.vcs]
-version-file = "src/lightshap/_version.py"
+# [tool.hatch.build.hooks.vcs]
+# version-file = "src/lightshap/_version.py"
 
 [project]
 name = "lightshap"
-dynamic = ["version"]
+version = "0.1.8"  # Static version for this release
+# dynamic = ["version"]  # Commented out for static versioning
 description = "A lightweight SHAP library"
 readme = "README.md"
 license = {text = "MIT"}
