@@ -1,13 +1,17 @@
 # Changelog
 
-## [0.1.8] - 2025-10-03
+## [0.1.9] - 2025-10-03
 
 ### Added
 - Released package on PyPI
-- Updated installation instructions in README
 
 ### Fixed
-- Resolved build issues by switching to static versioning (temporarily disabled hatch-vcs)
+- Resolved build issues by switching to static versioning (disabled hatch-vcs)
+
+## [0.1.8] - 2025-10-03
+
+### Added
+- Attempt for PyPI release (build issues encountered)
 
 ## [0.1.7] - 2025-10-03
 
