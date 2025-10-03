@@ -1,10 +1,14 @@
 # Changelog
 
+## [0.1.8] - 2025-10-03
+
+### Added
+- Attempt for PyPI release (build issues encountered)
+
 ## [0.1.7] - 2025-10-03
 
 ### Added
-- Released package on PyPI
-- Updated installation instructions in README
+- Attempt for PyPI release (build issues encountered)
 
 ## [0.1.6] - 2025-09-05
 
