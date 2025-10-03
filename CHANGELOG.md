@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## [0.1.7] - 2025-10-03
 
 ### Added
-- Added code coverage reporting to Codecov
-- Updated README badges to include code coverage
+- Released package on PyPI
+- Updated installation instructions in README
 
 ## [0.1.6] - 2025-09-05
 

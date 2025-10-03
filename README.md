@@ -58,19 +58,16 @@ explanation.plot.waterfall() # Individual explanation
 
 ## Installation
 
-**Current (Beta):**
-
 ```bash
+# From PyPI
+pip install lightshap
+
+# With all optional dependencies
+pip install lightshap[all]
+
 # From GitHub
 pip install git+https://github.com/mayer79/LightSHAP.git
-
-# From TestPyPI
-# pip install -i https://test.pypi.org/simple/ lightshap
 ```
-
-**Requirements:** Python 3.11+ | Linux, Mac, Windows
-
-## Contributing
 
 Contributions are highly appreciated! When contributing, you agree that your contributions will be subject to the [MIT License](https://github.com/mayer79/lightshap/blob/main/LICENSE).
 
