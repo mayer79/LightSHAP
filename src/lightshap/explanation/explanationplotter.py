@@ -675,38 +675,31 @@ class ExplanationPlotter:
         else:
             fig = ax.get_figure()
 
-        renderer = fig.canvas.get_renderer()
+        half_bar_height = 0.3
+        texts = []
+        polygons = []
 
-        # Bars (without arrow heads)
-        bar_height = 0.6
-
-        bar = ax.barh(
-            range(n),
-            df["bar_width"],
-            left=df["pos_left_bar"],
-            height=bar_height,
-            color=df["fill_color"],
-            zorder=3,
-        )
-
-        # Arrowheads and bar texts
+        # Arrows and bar texts
         for i, row in df.iterrows():
             if row["right"]:
                 vertices = [
-                    (row["pos_right_bar"], i + bar_height / 2),
-                    (row["pos_right_bar"], i - bar_height / 2),
+                    (row["pos_right_bar"], i + half_bar_height),
+                    (row["pos_left_bar"], i + half_bar_height),
+                    (row["pos_left_bar"], i - half_bar_height),
+                    (row["pos_right_bar"], i - half_bar_height),
                     (row["pos_right"], i),
                 ]
             else:
                 vertices = [
-                    (row["pos_left_bar"], i + bar_height / 2),
-                    (row["pos_left_bar"], i - bar_height / 2),
+                    (row["pos_left_bar"], i + half_bar_height),
+                    (row["pos_right_bar"], i + half_bar_height),
+                    (row["pos_right_bar"], i - half_bar_height),
+                    (row["pos_left_bar"], i - half_bar_height),
                     (row["pos_left"], i),
                 ]
-            polygon = Polygon(
-                vertices, closed=True, color=row["fill_color"], zorder=3, linewidth=0.0
-            )
+            polygon = Polygon(vertices, closed=True, color=row["fill_color"], zorder=3)
             ax.add_patch(polygon)
+            polygons.append(polygon)
 
             text_x = (row["pos_left_bar"] + row["pos_right_bar"]) / 2
             text = ax.text(
@@ -719,18 +712,13 @@ class ExplanationPlotter:
                 color="white",
                 **kwargs,
             )
-
-            # If text too large for bar, remove it
-            text_width = text.get_window_extent(renderer=renderer)
-            bar_width = bar[i].get_window_extent(renderer=renderer)
-            if text_width.width > bar_width.width * 0.95:
-                text.remove()
+            texts.append(text)
 
         # Connections between bars
         if n > 1:
             for i in range(n - 1):
                 xi = [df["To"][i], df["To"][i]]
-                yi = [i + 0.1, i + 1 - bar_height / 2 - 0.1]
+                yi = [i + 0.1, i + 1 - half_bar_height - 0.1]
                 ax.plot(xi, yi, color="gray", linestyle="--", linewidth=1)
 
         # Annotations
@@ -776,5 +764,15 @@ class ExplanationPlotter:
             ax.set_ylim(min(bottom, text_bottom) - padv, max(text_top, top) + padv)
 
         ax.tick_params(axis="both", labelsize=fontsize)
+
+        # Remove too large texts from bars. To get correct pixel sizes, we move to end
+        renderer = fig.canvas.get_renderer()
+        for i, row in df.iterrows():
+            text_width = texts[i].get_window_extent(renderer=renderer).width
+            arrow_width = polygons[i].get_window_extent(renderer=renderer).width
+            bar_width = arrow_width * row["bar_width"] / row["width"]
+
+            if text_width > bar_width * 0.95:
+                texts[i].remove()
 
         return ax
