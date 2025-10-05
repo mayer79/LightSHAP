@@ -9,7 +9,7 @@ __all__ = [
     "commit_id",
 ]
 
-__version__ = version = "0.1.9"
-__version_tuple__ = version_tuple = (0, 1, 9)
+__version__ = version = "0.1.10"
+__version_tuple__ = version_tuple = (0, 1, 10)
 
 __commit_id__ = commit_id = None

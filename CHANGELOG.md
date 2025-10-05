@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10] - 2025-10-05
+
+### Fixed
+
+- Removed small white lines in waterfall plot bars, caused by anti-aliasing issues in matplotlib
+- Fixed issue with text labels being cut off in waterfall plots when bars are too small
+
 ## [0.1.9] - 2025-10-03
 
 ### Added
