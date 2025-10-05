@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lightshap"
-version = "0.1.9"  # Static version for this release
+version = "0.1.10"  # Static version for this release
 # dynamic = ["version"]  # Commented out for static versioning
 description = "A lightweight SHAP library"
 readme = "README.md"
