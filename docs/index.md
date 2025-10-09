@@ -17,6 +17,19 @@
 5. Supports case weights
 6. Accepts numpy, pandas, and polars input, and categorical features
 
+**Some methods of the explanation object:**
+
+- `plot.bar()`: Feature importance bar plot
+- `plot.beeswarm()`: Summary beeswarm plot
+- `plot.scatter()`: Dependence plots
+- `plot.waterfall()`: Waterfall plot for individual explanations
+- `importance()`: Returns feature importance values
+- `set_X()`: Update explanation data, e.g., to replace a numpy array with a DataFrame
+- `set_feature_names()`: Set or update feature names
+- `select_output()`: Select a specific output for multi-output models
+- `filter()`: Subset explanations by condition or indices
+- ...
+
 ## Quick Start
 
 ```python
