@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.12] - 2025-10-14
+
+### Fixed
+
+- Fixed workflow file
+
 ## [0.1.11] - 2025-10-14
 
 ### Fixed
