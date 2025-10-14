@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.11] - 2025-10-14
+
+### Fixed
+
+- Removed unnecessary __about__.py file
+- Import __version__ in __init__.py
+
 ## [0.1.10] - 2025-10-05
 
 ### Fixed
