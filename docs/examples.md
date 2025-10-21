@@ -62,6 +62,8 @@ explanation.plot.waterfall(row_id=0)
 
 ## Example 2: Linear regression with interactions
 
+We use `X` and `y` from the previous example.
+
 > **Note:** This example requires `glum`. Install with `pip install glum`
 
 ```python

@@ -41,7 +41,7 @@
 - `filter()`: Subset explanations by condition or indices
 - ...
 
-## Quick Start
+## Usage
 
 ```python
 from lightshap import explain_any, explain_tree
@@ -51,6 +51,7 @@ explanation = explain_any(model.predict, X)
 
 # For tree models (XGBoost, LightGBM, CatBoost)
 explanation = explain_tree(model, X)
+# explanation.set_X(df)  # Optional: replace array with DataFrame for better plots
 
 # Create plots
 explanation.plot.bar()       # Feature importance
