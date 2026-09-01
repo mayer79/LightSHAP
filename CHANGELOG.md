@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.13] - 2026-09-01
+
+### Fixed
+
+- Raise a clearer error when computing TreeSHAP values fails for XGBoost multi-target regression models. This situation may happen because XGBoost native TreeSHAP implementation for such models had been introduced not before version 3.3.0.
+
 ## [0.1.12] - 2025-10-14
 
 ### Fixed
