@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+from packaging.version import Version
 from sklearn.datasets import make_classification, make_regression
 from sklearn.ensemble import RandomForestRegressor
 
@@ -109,6 +110,46 @@ class TestXGBoost:
         expl = explain_tree(model, X_df)
 
         # For multiclass, expected shape is (n, K, p+1) -> (n, p, K)
+        expected_values = expected_shap[:, :, :-1].swapaxes(1, 2)
+        expected_baseline = expected_shap[0, :, -1]
+
+        np.testing.assert_allclose(expl.shap_values, expected_values)
+        pd.testing.assert_frame_equal(expl.X, X_df)
+        np.testing.assert_allclose(expl.baseline, expected_baseline)
+        assert expl.feature_names == feature_names
+
+    def test_xgboost_multioutput_regressor(self):
+        """Test XGBRegressor with multi_strategy='multi_output_tree'."""
+        xgb = pytest.importorskip("xgboost")
+
+        # SHAP for vector-valued (multi-output) leaves was added in xgboost 3.3.0
+        if Version(xgb.__version__) < Version("3.3.0"):
+            pytest.skip(
+                f"xgboost {xgb.__version__} does not support pred_contribs for "
+                "multi-output trees (requires >=3.3.0)"
+            )
+
+        X, y = make_regression(n_samples=100, n_features=4, n_targets=3, random_state=1)
+        feature_names = [f"f{i}" for i in range(X.shape[1])]
+        X_df = pd.DataFrame(X, columns=feature_names)
+
+        model = xgb.XGBRegressor(
+            n_estimators=10,
+            multi_strategy="multi_output_tree",
+            tree_method="hist",
+            random_state=0,
+        )
+        model.fit(X_df, y)
+
+        # Get SHAP values directly from XGBoost
+        booster = model.get_booster()
+        dtest = xgb.DMatrix(X_df)
+        expected_shap = booster.predict(dtest, pred_contribs=True)
+
+        # Test explain_tree
+        expl = explain_tree(model, X_df)
+
+        # For multi-output, expected shape is (n, K, p+1) -> (n, p, K)
         expected_values = expected_shap[:, :, :-1].swapaxes(1, 2)
         expected_baseline = expected_shap[0, :, -1]
 
