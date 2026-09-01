@@ -301,7 +301,15 @@ def _xgb_shap(model, X):
         X_pred = X
         X = X.get_data().toarray()
 
-    shap_values = model.predict(X_pred, pred_contribs=True)
+    try:
+        shap_values = model.predict(X_pred, pred_contribs=True)
+    except xgb.core.XGBoostError as e:
+        msg = (
+            "Failed to compute TreeSHAP values. If this model uses "
+            "multi_strategy='multi_output_tree', pred_contribs requires "
+            f"xgboost>=3.3.0 (found {xgb.__version__}). Original error: {e}"
+        )
+        raise RuntimeError(msg) from e
 
     return shap_values, X, model.feature_names
 
